@@ -272,14 +272,14 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
   <div class="m hero-grid">
     <div>
       <span class="ping"><i></i>4 active around Ikeja GRA</span>
-      <h1>Important things happening nearby. In time to matter.</h1>
-      <p class="sub">A blocked road. A power cut. Something at the estate gate. The people it actually affects usually find out last. This tells them first.</p>
+      <h1>Know before the group chat.</h1>
+      <p class="sub">A blocked road, an outage, something at the gate. The people nearby hear it first, and only the people nearby hear it.</p>
       <div class="cta">
         <a class="btn" href="/prototype">Open the prototype
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></a>
         <a class="btn gh" href="https://github.com/SMUTEE/community-alerts-system" target="_blank" rel="noopener">Read the code</a>
       </div>
-      <p class="hero-note">Thirteen screens, clickable, nothing to install.</p>
+      <p class="hero-note">No sign-up. Nothing to install.</p>
     </div>
 
     <div class="ph" aria-label="The home screen of the app">
@@ -331,7 +331,6 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
   <div>
     <span class="lab">The problem</span>
     <h2>Someone 500 metres away already knows.</h2>
-    <p class="sec-p">The information exists. It is sitting in a WhatsApp group you are not in, or with a neighbour you have not spoken to today. By the time it reaches you, the window where it would have changed your evening has closed.</p>
     <div class="chans">
       <span class="chan">The estate WhatsApp group</span>
       <span class="chan">A Telegram channel</span>
@@ -343,9 +342,9 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
     </div>
   </div>
   <div class="fails">
-    <div class="fail"><h3>It is scattered</h3><p>Seven places to check, and the one that has it is the one you are not in.</p></div>
-    <div class="fail"><h3>It arrives late</h3><p>A message forwarded through three groups reaches you after you have already driven into the traffic.</p></div>
-    <div class="fail"><h3>It does not know where you are</h3><p>No group chat can answer the only question that matters: is this relevant to me, right now?</p></div>
+    <div class="fail"><h3>Scattered</h3><p>Seven places to check. The one with it is the one you are not in.</p></div>
+    <div class="fail"><h3>Late</h3><p>Forwarded through three groups, it reaches you after the traffic does.</p></div>
+    <div class="fail"><h3>Blind</h3><p>No group chat knows where you are standing.</p></div>
   </div>
 </div></section>
 
@@ -356,19 +355,19 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
     <div class="step" style="--sc:var(--imp)">
       <span class="n">01</span>
       <h3>Someone reports it</h3>
-      <p>Two taps. Pick a category, check the location the app already filled in, send. A description is optional, because the category and the place carry most of the value.</p>
+      <p>Two taps: what it is, and where. The app already knows where you are.</p>
       <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.3 2"/></svg>Under fifteen seconds</div>
     </div>
     <div class="step" style="--sc:var(--ok)">
       <span class="n">02</span>
       <h3>The people nearby confirm it</h3>
-      <p>Anyone inside the alert area is asked a direct question: can you see this? Structured answers, not a comment thread. Confidence rises, or the report quietly dies.</p>
-      <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>No arguing, no replies</div>
+      <p>Everyone inside the area gets one question: can you see this?</p>
+      <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>No comments. No arguing.</div>
     </div>
     <div class="step" style="--sc:var(--info)">
       <span class="n">03</span>
       <h3>Only the right people are told</h3>
-      <p>Distance, direction, category and confidence together decide who gets a notification. Someone driving toward a blocked road needs to know. Someone at home behind it does not.</p>
+      <p>Driving toward the blocked road, you are told. Home behind it, you are not.</p>
       <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>Relevance, not radius</div>
     </div>
   </div>
@@ -378,18 +377,18 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
   <div>
     <span class="lab">Trust</span>
     <h2>The hard part is knowing what to believe.</h2>
-    <p class="sec-p">A local alert app is worthless the moment people cannot tell a real incident from something somebody made up. So every alert carries its confidence on its face, everywhere it appears: in the feed, on the map, and inside the notification.</p>
+    <p class="sec-p">Every alert carries its confidence on its face. In the feed, on the map, inside the notification.</p>
     <div class="rule">
       <h3>One person cannot ring 180 phones.</h3>
-      <p>An unconfirmed report is visible in the feed and nowhere else. It becomes a notification only once someone else nearby independently confirms it. False alarms cost the sender reach, not the neighbourhood its sleep.</p>
+      <p>An unconfirmed report sits in the feed and nowhere else. It becomes a notification when a second person nearby sees it too.</p>
     </div>
   </div>
   <div class="states">
-    <div class="state"><span class="tchip t-un">Unverified · 1 report</span><p>One person said so. Feed only.</p></div>
-    <div class="state"><span class="tchip t-mu">47 independent reports</span><p>Separate people reported the same thing, and it was merged into one alert.</p></div>
-    <div class="state"><span class="tchip t-co">14 confirmed</span><p>People inside the area were asked and said they could see it.</p></div>
-    <div class="state"><span class="tchip t-sr">Residents' Association</span><p>Posted by a verified organisation.</p></div>
-    <div class="state"><span class="tchip t-re">Resolved</span><p>Over. Kept for a day, then archived.</p></div>
+    <div class="state"><span class="tchip t-un">Unverified · 1 report</span><p>Feed only.</p></div>
+    <div class="state"><span class="tchip t-mu">47 independent reports</span><p>Separate people, same thing, merged into one.</p></div>
+    <div class="state"><span class="tchip t-co">14 confirmed</span><p>People inside the area were asked, and said yes.</p></div>
+    <div class="state"><span class="tchip t-sr">Residents' Association</span><p>A verified organisation.</p></div>
+    <div class="state"><span class="tchip t-re">Resolved</span><p>Over. Archived after a day.</p></div>
   </div>
 </div></section>
 
@@ -403,16 +402,16 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
   <div>
     <span class="lab">Notifications</span>
     <h2>If everything is urgent, nothing is.</h2>
-    <p class="sec-p">Notification fatigue is the thing most likely to kill an app like this. So there is a floor and a ceiling. You control almost everything, but not quite everything.</p>
+    <p class="sec-p">A floor and a ceiling. You control almost everything, but not quite everything.</p>
     <div class="tiers" role="tablist" aria-label="Notification tiers">
       <div class="tier" role="tab" tabindex="0" data-tier="critical" aria-selected="true"><span class="tp" style="background:var(--crit-d);color:var(--crit)">Interrupts you</span>
-        <h3>Critical</h3><p>Cannot be switched off. Capped at four a day, however many are reported.</p>
+        <h3>Critical</h3><p>No off switch. Four a day, maximum.</p>
         <ul><li>Confirmed fire</li><li>Security, once corroborated</li><li>Severe flooding</li></ul></div>
       <div class="tier" role="tab" tabindex="0" data-tier="important" aria-selected="false"><span class="tp" style="background:var(--imp-d);color:var(--imp)">Notifies, batched</span>
-        <h3>Important</h3><p>Grouped, at most one an hour. Forty-seven outage reports make one notification.</p>
+        <h3>Important</h3><p>Grouped. Forty-seven outage reports, one line.</p>
         <ul><li>Roads blocked or closed</li><li>Power and water</li><li>Missing person or pet</li></ul></div>
       <div class="tier" role="tab" tabindex="0" data-tier="feed" aria-selected="false"><span class="tp" style="background:var(--info-d);color:var(--info)">No notification</span>
-        <h3>For the feed</h3><p>There when you look, silent when you do not.</p>
+        <h3>For the feed</h3><p>Silent. There when you look.</p>
         <ul><li>Community notices</li><li>Events and closures</li><li>Lost and found</li></ul></div>
     </div>
   </div>
@@ -421,19 +420,18 @@ footer{border-top:1px solid var(--hair);padding-block:30px 40px}
 <section id="privacy"><div class="m pad">
   <span class="lab">Privacy</span>
   <h2>Location is the most sensitive thing you own.</h2>
-  <p class="sec-p">An app that watches where you are has to be unusually specific about what it keeps. The rule is the minimum needed to decide what to show you, and nothing beyond it.</p>
   <div class="priv">
-    <div class="pv"><h3>Approximate, never exact</h3><p>Your rough area, about 500 metres across. Enough to sort alerts by distance, not enough to place you on a street.</p></div>
-    <div class="pv"><h3>Pinned places stay private</h3><p>Save home, work, a parent's house. None of it is published, and nobody can tell that anyone has pinned a particular address.</p></div>
-    <div class="pv"><h3>Nobody sees where you are</h3><p>Other people see that an alert is near them. They never see a person on a map. Reports are pinned to the nearest junction, not to whoever sent them.</p></div>
-    <div class="pv"><h3>Off means off</h3><p>Turn location off and nothing is stored. Follow a place by name instead and the app still works.</p></div>
+    <div class="pv"><h3>Approximate, never exact</h3><p>About 500 metres across. Enough to sort by distance, not enough to find your door.</p></div>
+    <div class="pv"><h3>Pinned places stay private</h3><p>Save home and work. Nobody can tell that anyone has pinned an address.</p></div>
+    <div class="pv"><h3>Nobody sees you</h3><p>Reports are pinned to the junction, not to whoever sent them. There are no people on the map.</p></div>
+    <div class="pv"><h3>Off means off</h3><p>Turn it off and nothing is stored. Follow a place by name instead.</p></div>
   </div>
 </div></section>
 
 <section><div class="m close">
   <span class="lab">Try it</span>
   <h2>Thirteen screens. Nothing to install.</h2>
-  <p class="sec-p">Walk the whole thing: open an alert, confirm it, watch it change state, file a report, and see why a security report waits for a second witness before it wakes anybody up.</p>
+  <p class="sec-p">Open an alert, confirm it, and see why a security report waits for a second witness.</p>
   <div class="cta">
     <a class="btn" href="/prototype">Open the prototype
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></a>
