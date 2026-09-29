@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#09090A">
-<meta name="description" content="An interactive prototype of Community Alerts — see what is happening around you, report it, and confirm what others report.">
+<meta name="description" content="An interactive prototype of the Community Alerts System. See what is happening around you, report it, and confirm what other people report.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Community Alerts">
-<meta property="og:description" content="An interactive prototype of Community Alerts — see what is happening around you, report it, and confirm what others report.">
+<meta property="og:title" content="Community Alerts System">
+<meta property="og:description" content="An interactive prototype of the Community Alerts System. See what is happening around you, report it, and confirm what other people report.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309090A'/%3E%3Cpath d='M16 7.5C12.4 7.5 9.5 10.4 9.5 14c0 4.6 6.5 10.5 6.5 10.5S22.5 18.6 22.5 14c0-3.6-2.9-6.5-6.5-6.5z' fill='none' stroke='%23FAFAFA' stroke-width='2'/%3E%3Ccircle cx='16' cy='13.8' r='2.2' fill='%23FF5F52'/%3E%3C/svg%3E">
 <style>
   html,body{height:100%}
@@ -16,21 +16,21 @@
   img{max-width:100%}
   [hidden]{display:none!important}
 </style>
-<title>Community Alerts</title>
+<title>Community Alerts System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <style>
 @font-face{font-family:Satoshi;src:url('satoshi.woff2') format('woff2');font-weight:300 900;font-style:normal;font-display:swap}
 
-/* Layout: quiet studio bench — index, device, and the audit note for the open screen; one column under 940px. */
+/* Layout: quiet studio bench. Index, device, and the audit note for the open screen; one column under 940px. */
 :root{
   --pg:#E9EAEA; --pg-2:#F6F7F7; --card:#FFFFFF; --ink:#131415; --ink-2:#5C6164;
   --ink-3:#8D9295; --line:#D3D6D7; --accent:#12494F; --shadow:0 28px 64px -20px rgba(9,17,20,.42);
   --f:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --f-u:"Inter",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
 
-  /* App — fixed in both themes: this is the product */
+  /* App palette, fixed in both themes: this is the product */
   --bg:#09090A; --surf:#131315; --surf-2:#1A1A1D; --raise:#202024;
   --fg:#FAFAFA; --fg-2:#A2A3A7; --fg-3:#6C6D72; --hair:#1E1E21; --hair-2:#2A2A2E;
   --crit:#FF5F52; --imp:#E9A13B; --info:#6BA8D8; --ok:#4FC48A;
@@ -109,9 +109,12 @@ h1{font-size:clamp(30px,4.6vw,42px);font-weight:700;line-height:1;letter-spacing
 .refs{margin-top:8px}
 .refs a{display:inline-block;font-family:var(--f-u);font-size:10.5px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:0 5px 5px 0}
 .refs a:hover{border-color:var(--accent);color:var(--accent)}
+.credit{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--f-u);font-size:12.5px;color:var(--ink-3)}
+.credit a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
+.credit a:hover{color:var(--accent);border-color:var(--accent)}
 
 /* =====================================================
-   APP — Direction B, refined
+   APP: Direction B, refined
    ===================================================== */
 .sc{flex:1;min-height:0;display:none;flex-direction:column}
 .sc[data-on="1"]{display:flex}
@@ -367,8 +370,8 @@ textarea::placeholder{color:var(--fg-3)}
   <header class="head">
     <div>
       <p class="eyebrow">Interactive prototype · not a real service</p>
-      <h1>Community Alerts</h1>
-      <p class="lede">Community Alerts tells you what is happening in your immediate area — a blocked road, an outage, an incident at the gate — while it still changes what you would do. Thirteen screens, all clickable. Pick one on the left, and the panel on the right explains what you are looking at and what you can try.</p>
+      <h1>Community Alerts System</h1>
+      <p class="lede">See what is happening around you, report it, and confirm what other people report. Thirteen screens, all clickable. Pick one on the left, and the panel on the right explains what you are looking at and what you can try.</p>
     </div>
     <span class="tag">Nothing here is saved or sent</span>
   </header>
@@ -413,6 +416,8 @@ textarea::placeholder{color:var(--fg-3)}
       <div id="n-notes"></div>
     </div></div>
   </div>
+
+  <footer class="credit">Built by <a href="https://x.com/__Smute" target="_blank" rel="noopener">Smute</a></footer>
 </div>
 
 <script>
@@ -688,11 +693,11 @@ notif(){
   '<div class="rows">'+row('Fire','Confirmed fire in your alert area',1,1)+
    row('Security incident','Only once a second person nearby confirms it',1,1)+
    row('Severe flooding','Water blocking a road you follow',1,1)+'</div>'+
-  '<p class="expl">These cannot be switched off — it is the promise the app makes. They are still capped, and an unconfirmed report never becomes one.</p>'+
+  '<p class="expl">These cannot be switched off. It is the promise the app makes. They are still capped, and an unconfirmed report never becomes one.</p>'+
   '<div class="tierh"><h3>Important</h3><span class="tp" style="background:var(--imp-d);color:var(--imp)">Notifies, batched</span></div>'+
   '<div class="rows">'+row('Road blocked or closed','When it affects a road you use',1)+
-   row('Power outage','Batched — at most one an hour',1)+
-   row('Water outage','Batched — at most one an hour',0)+
+   row('Power outage','Batched, at most one an hour',1)+
+   row('Water outage','Batched, at most one an hour',0)+
    row('Missing person or pet','Within 3 km of a place you follow',1)+'</div>'+
   '<div class="tierh"><h3>For the feed</h3><span class="tp" style="background:var(--info-d);color:var(--info)">No notification</span></div>'+
   '<div class="rows">'+row('Community notices','From verified organisations',0)+
@@ -747,7 +752,7 @@ ob1(){
   '<div class="ob1-c">'+
    '<span class="lab" style="display:block;margin-bottom:14px">Ikeja GRA · right now</span>'+
    '<h2 class="h-xl" style="font-size:33px">Important things happening nearby. In time to matter.</h2>'+
-   '<p class="bd" style="margin-top:14px;max-width:32ch">The blocked road, the outage, the incident at the gate — while it still changes what you would do.</p>'+
+   '<p class="bd" style="margin-top:14px;max-width:32ch">The blocked road, the outage, the incident at the gate, while it still changes what you would do.</p>'+
    '<div class="dots"><i class="on"></i><i></i><i></i></div>'+
    '<div class="stack"><button class="btn" data-go="ob2">Get started</button></div>'+
   '</div></div>';
@@ -758,7 +763,7 @@ ob2(){
  '<h2 class="h-xl" style="font-size:30px">Where should we keep you informed?</h2>'+
  '<p class="bd" style="margin-top:12px">You can change this any time, and add as many places as you like.</p>'+
  '<div class="pts">'+
-  '<div class="pt"><span class="pi">'+I.pin+'</span><div><h4>Wherever I am</h4><p>We use your rough area — about 500 m — never your exact street.</p></div></div>'+
+  '<div class="pt"><span class="pi">'+I.pin+'</span><div><h4>Wherever I am</h4><p>We use your rough area, about 500 m. Never your exact street.</p></div></div>'+
   '<div class="pt"><span class="pi">'+I.home+'</span><div><h4>A place I choose</h4><p>Home, work, your child’s school. Watched even when you are not there.</p></div></div>'+
   '<div class="pt"><span class="pi">'+I.security+'</span><div><h4>Nobody sees where you are</h4><p>Your location is only ever used to decide what to show you.</p></div></div>'+
  '</div></div>'+
@@ -809,47 +814,47 @@ function permMap(){return '<svg viewBox="0 0 244 78" preserveAspectRatio="xMidYM
  '<circle cx="122" cy="42" r="24" fill="#4FA8F7" opacity=".2"/><circle cx="122" cy="42" r="6" fill="#4FA8F7" stroke="#2A2A2D" stroke-width="2.2"/></svg>';}
 const NOTES={
 ob1:{t:'Welcome',job:'The first thing a new user sees. It shows a live slice of the map so the app explains itself before it asks for anything.',
- n:[['see','What you are looking at','Four live alerts around Ikeja GRA, a fictional estate in Lagos. The blue dot is you; the dashed circle is the area you get alerted about. The <b>red dashed pin</b> is a report nobody has confirmed yet — it looks different on purpose.'],
+ n:[['see','What you are looking at','Four live alerts around Ikeja GRA, a fictional estate in Lagos. The blue dot is you; the dashed circle is the area you get alerted about. The <b>red dashed pin</b> is a report nobody has confirmed yet, and it looks different on purpose.'],
     ['do','Try it','Tap <b>Get started</b> to move on to choosing a location.']]},
 ob2:{t:'Choosing a location',job:'How the app decides what counts as “near you”. You can follow somewhere you are not.',
  n:[['see','What you are looking at','Three promises: a rough area rather than your street, places you pick yourself, and no sharing of your position with anyone.'],
-    ['do','Try it','<b>Use where I am</b> brings up the iOS permission prompt. <b>Skip for now</b> goes straight to the feed — refusing is a supported path, not a dead end.']]},
+    ['do','Try it','<b>Use where I am</b> brings up the iOS permission prompt. <b>Skip for now</b> goes straight to the feed. Refusing is a supported path, not a dead end.']]},
 ob3:{t:'Location permission',job:'The system prompt. The screens before it exist to make this one make sense.',
  n:[['see','What you are looking at','A real iOS location dialog, shown only after the person has been told what it is for.'],
-    ['do','Try it','<b>Allow</b> opens the feed. <b>Don’t Allow</b> takes you to screen 13, the quiet area — the app still works, it just watches a place you pick instead.']]},
+    ['do','Try it','<b>Allow</b> opens the feed. <b>Don’t Allow</b> takes you to screen 13, the quiet area. The app still works, it just watches a place you pick instead.']]},
 home:{t:'Home',job:'The main screen, and the one question the whole product answers: is anything happening around me that I should know about?',
- n:[['see','What you are looking at','One alert is promoted to the top — chosen by distance and confidence together. Below it, a stream ordered by how close and how recent. Distance runs down the left edge so you can scan by proximity. The coloured tick before each category is severity.'],
-    ['see','The security alert','Second in the stream, and the most important thing on this screen. It is red because it is serious, but its status is deliberately quiet — <b>Unverified · 1 report</b> — and it states that it has <b>not been sent to anyone</b> as a notification. One person alone cannot ring hundreds of phones.'],
+ n:[['see','What you are looking at','One alert is promoted to the top, chosen by distance and confidence together. Below it, a stream ordered by how close and how recent. Distance runs down the left edge so you can scan by proximity. The coloured tick before each category is severity.'],
+    ['see','The security alert','Second in the stream, and the most important thing on this screen. It is red because it is serious, but its status is deliberately quiet, <b>Unverified · 1 report</b>, and it states that it has <b>not been sent to anyone</b> as a notification. One person alone cannot ring hundreds of phones.'],
     ['do','Try it','Tap any alert to open it. The <b>bell</b> opens notification settings, and the <b>+</b> in the tab bar starts a report.']]},
 detail:{t:'Alert detail',job:'Everything known about one alert, and where you tell the community whether it is true.',
  n:[['see','What you are looking at','A timeline of what changed and when, rather than a comment thread. The small map is pinned to the junction, not to whoever reported it, so reporting something does not reveal where you were standing.'],
-    ['do','Answer the question','Tap <b>I see it</b> and watch the confirmation count rise and the trust state change. On the security alert this also clears the held-from-notifications warning — it has been corroborated, so now it can be sent.'],
+    ['do','Answer the question','Tap <b>I see it</b> and watch the confirmation count rise and the trust state change. On the security alert this also clears the held-from-notifications warning. It has been corroborated, so now it can be sent.'],
     ['do','Try the aged one','Go back and open <b>Water rising around the underpass</b>. It is an hour old, so it asks <i>is this still happening?</i> instead of <i>did this happen?</i> Answering “it’s over” resolves it.']]},
 map:{t:'Map',job:'The same alerts, placed. Useful for seeing what sits between you and where you are going.',
- n:[['see','What you are looking at','Your position, your alert radius as the dashed ring, and a pin per alert. The <b>dashed outline pin</b> is the unconfirmed one — a map where every pin looks equally true would be misleading.'],
+ n:[['see','What you are looking at','Your position, your alert radius as the dashed ring, and a pin per alert. The <b>dashed outline pin</b> is the unconfirmed one. A map where every pin looks equally true would be misleading.'],
     ['do','Try it','Tap any pin to load that alert into the sheet at the bottom, then tap the card to open it in full.']]},
-cat:{t:'Reporting — what happened',job:'Step one of filing a report. It has to work one-handed, in the rain, by someone who is upset.',
+cat:{t:'Reporting: what happened',job:'Step one of filing a report. It has to work one-handed, in the rain, by someone who is upset.',
  n:[['see','What you are looking at','Eight categories covering safety, transport, utilities and community notices. Structured rather than free text, because the category is what decides who gets told and how loudly.'],
-    ['do','Try it','Pick any category. <b>Security</b> or <b>Fire</b> are worth trying — they behave differently at the end of the flow.']]},
-review:{t:'Reporting — check and send',job:'Everything else about the report on one screen, with the consequence sitting right above the button that causes it.',
- n:[['see','What you are looking at','The location is already filled in and snapped to the nearest junction. The audience is <b>calculated from the category</b>, not asked of you — a road blockage reaches along the road, an outage reaches wider.'],
-    ['do','Try it','Type a description, or do not — it is optional. Tap <b>Adjust</b> to change the radius and watch the number of people update, and for a road report, to set which direction is affected.'],
+    ['do','Try it','Pick any category. <b>Security</b> or <b>Fire</b> are worth trying, because they behave differently at the end of the flow.']]},
+review:{t:'Reporting: check and send',job:'Everything else about the report on one screen, with the consequence sitting right above the button that causes it.',
+ n:[['see','What you are looking at','The location is already filled in and snapped to the nearest junction. The audience is <b>calculated from the category</b>, not asked of you. A road blockage reaches along the road, an outage reaches wider.'],
+    ['do','Try it','Type a description, or do not. It is optional. Tap <b>Adjust</b> to change the radius and watch the number of people update, and for a road report, to set which direction is affected.'],
     ['do','Then send','Tap <b>Send alert</b>.']]},
 sent:{t:'Report sent',job:'Confirmation, and an honest account of what happens next.',
- n:[['see','What you are looking at','For an ordinary category this tells you how many phones it reached. For <b>Security</b> or <b>Fire</b> it says the opposite — that no notification has gone out yet, and someone else nearby has to confirm it first.'],
+ n:[['see','What you are looking at','For an ordinary category this tells you how many phones it reached. For <b>Security</b> or <b>Fire</b> it says the opposite, that no notification has gone out yet, and someone else nearby has to confirm it first.'],
     ['do','Compare them','Go back to screen 07, file a <b>power outage</b>, and compare this screen with what you get after filing a <b>security</b> report.']]},
-places:{t:'Places',job:'Everywhere you are watching — where you are now, places you pinned, and areas you follow.',
+places:{t:'Places',job:'Everywhere you are watching: where you are now, places you pinned, and areas you follow.',
  n:[['see','What you are looking at','Three groups, three different meanings. Each place carries its own alert radius and its own notification level, summarised on one line.'],
     ['see','On privacy','Pinned places are never published. Nobody can tell that anyone has pinned a particular house or street, and your live location is kept as a rough area rather than an address.'],
     ['do','Try it','Toggle <b>Where I am</b> off and on.']]},
 notif:{t:'Notifications',job:'What is allowed to interrupt you. For an app like this, getting it wrong is what makes people delete it.',
  n:[['see','What you are looking at','Three tiers. <b>Critical</b> interrupts, <b>Important</b> notifies and batches, and the rest stays in the feed with no notification at all.'],
-    ['see','The critical rows have no switch','They say <i>Always on</i> instead. That is the promise the app makes — but it is capped at four a day however many are reported, and an unconfirmed report never becomes one.'],
+    ['see','The critical rows have no switch','They say <i>Always on</i> instead. That is the promise the app makes, but it is capped at four a day however many are reported, and an unconfirmed report never becomes one.'],
     ['do','Try it','Toggle anything in <b>Important</b> or <b>For the feed</b>. The critical rows will not move.']]},
 lock:{t:'Lock screen',job:'How an alert actually arrives. Most people will read it here and act on it without ever opening the app.',
- n:[['see','What you are looking at','Distance and direction in the headline, because those are the two facts that change what you do next. Underneath, the trust state — <b>14 people nearby confirmed</b> — so an alert is never an anonymous claim.'],
+ n:[['see','What you are looking at','Distance and direction in the headline, because those are the two facts that change what you do next. Underneath, the trust state, <b>14 people nearby confirmed</b>, so an alert is never an anonymous claim.'],
     ['see','The faded second one','That is a batched outage notification. Forty-seven people reported the same blackout and it produced one quiet notification, not forty-seven.']]},
-empty:{t:'A quiet area',job:'What you see when nothing is happening — which, in a healthy community, is most evenings.',
+empty:{t:'A quiet area',job:'What you see when nothing is happening, which, in a healthy community, is most evenings.',
  n:[['see','What you are looking at','Coverage instead of content. <b>47 people watching this area</b> tells you the app is working and the area is calm; an empty list cannot tell those two apart and just looks broken.'],
     ['do','Try it','The two buttons are the two things that actually help: more neighbours watching, or following somewhere with more going on.']]}
 };
@@ -862,7 +867,7 @@ const phone=document.getElementById('phone');
 function render(){
  phone.innerHTML='<div class="sc" data-on="1">'+B[S.screen]()+'</div>';
  document.querySelectorAll('.nav-b').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===S.screen)));
- document.getElementById('cap').textContent=NUM[S.screen]+' — '+CAP[S.screen];
+ document.getElementById('cap').textContent=NUM[S.screen]+' \u00b7 '+CAP[S.screen];
  const n=NOTES[S.screen];
  document.getElementById('n-eye').textContent='Screen '+NUM[S.screen]+' of 13';
  document.getElementById('n-title').textContent=n.t;
@@ -909,7 +914,7 @@ function wire(){
    const v=Math.round(c.p*m[+p.dataset.r]/10)*10;
    phone.querySelector('#rn').innerHTML='~'+v+'<span>people</span>';
    phone.querySelector('#sn').textContent='Reaches about '+v+' people around Ikeja GRA';
-   if(+p.dataset.r!==1)phone.querySelector('#rw').innerHTML='Changed from the suggested <b>'+c.r+'</b>. Wider is not always better — it costs you trust with people it did not concern.';
+   if(+p.dataset.r!==1)phone.querySelector('#rw').innerHTML='Changed from the suggested <b>'+c.r+'</b>. Wider is not always better. It costs you trust with people it did not concern.';
   });}
  const dir=phone.querySelector('#dir');
  if(dir)dir.querySelectorAll('.pick').forEach(p=>p.onclick=()=>{

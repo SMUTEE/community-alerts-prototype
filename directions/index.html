@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#09090A">
 <meta name="description" content="Three visual directions explored for the Community Alerts home screen, each shown in a busy and a quiet state.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Community Alerts — home screen studies">
+<meta property="og:title" content="Community Alerts System: home screen studies">
 <meta property="og:description" content="Three visual directions explored for the Community Alerts home screen, each shown in a busy and a quiet state.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309090A'/%3E%3Cpath d='M16 7.5C12.4 7.5 9.5 10.4 9.5 14c0 4.6 6.5 10.5 6.5 10.5S22.5 18.6 22.5 14c0-3.6-2.9-6.5-6.5-6.5z' fill='none' stroke='%23FAFAFA' stroke-width='2'/%3E%3Ccircle cx='16' cy='13.8' r='2.2' fill='%23FF5F52'/%3E%3C/svg%3E">
 <style>
@@ -16,7 +16,7 @@
   img{max-width:100%}
   [hidden]{display:none!important}
 </style>
-<title>Community Alerts Home Studies</title>
+<title>Community Alerts System Home Studies</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
@@ -85,9 +85,12 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
 .foot h2{font-family:var(--f-b);font-weight:700;font-size:20px;letter-spacing:-.02em;margin:0 0 14px}
 .foot p{font-size:14px;line-height:1.65;color:var(--ink-2);max-width:72ch;margin:0 0 11px}
 .foot p b{color:var(--ink);font-weight:600}
+.credit{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--f-c);font-size:12.5px;color:var(--ink-3)}
+.credit a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
+.credit a:hover{color:var(--accent);border-color:var(--accent)}
 
 /* =========================================================
-   A — STATUS
+   A: STATUS
    ========================================================= */
 .dirA{--a-bg:#EEF1F0;--a-surf:#FFFFFF;--a-ink:#0C1518;--a-ink2:#5A6B70;--a-ink3:#8D9BA0;
       --a-line:#E2E8E8;--a-tint:#0F5A66;--a-crit:#C1362B;--a-imp:#BE7415;--a-inf:#3C6B87;--a-ok:#3E7A58;
@@ -134,7 +137,7 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
 .A-tab.fab{background:#fff;color:#0C1518}
 
 /* =========================================================
-   B — SIGNAL
+   B: SIGNAL
    ========================================================= */
 .dirB{--b-bg:#08090A;--b-surf:#111314;--b-ink:#F2F4F4;--b-ink2:#9DA6A9;--b-ink3:#6B7477;
       --b-line:#1E2224;--b-crit:#FF4D3D;--b-imp:#FFA028;--b-inf:#5BA8D6;--b-ok:#52C78C;
@@ -184,7 +187,7 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
 .B-fab{width:42px;height:42px;border-radius:14px;background:var(--b-ink);color:#08090A;display:grid;place-items:center}
 
 /* =========================================================
-   C — PROXIMITY
+   C: PROXIMITY
    ========================================================= */
 .dirC{--c-bg:#0D1417;--c-surf:#FFFFFF;--c-ink:#0B1215;--c-ink2:#576A70;--c-ink3:#8B9BA1;
       --c-line:#E6ECEE;--c-acc:#0E6B74;--c-crit:#CE3A2C;--c-imp:#C27916;--c-inf:#3E739A;--c-ok:#3E7F5C;
@@ -235,9 +238,9 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
 <div class="wrap">
   <header class="head">
     <div>
-      <p class="eyebrow">Community Alerts · home screen · three directions</p>
+      <p class="eyebrow">Community Alerts System · home screen · three directions</p>
       <h1>Pick a direction.</h1>
-      <p class="lede">Same information architecture, same content, three different arguments about what a community alert app should feel like. Switch the state below — most of the time this app has nothing to report, and a home screen that only works when something is on fire is not finished.</p>
+      <p class="lede">Same information architecture, same content, three different arguments about what a community alert app should feel like. Switch the state below. Most of the time this app has nothing to report, and a home screen that only works when something is on fire is not finished.</p>
     </div>
     <div class="toggle" role="group" aria-label="Content state">
       <button id="tBusy" aria-pressed="true">Busy night</button>
@@ -255,7 +258,7 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
       <div class="phone dirA" id="pA" data-state="busy"></div>
       <div class="why">
         <dl>
-          <div><dt>Best at</dt><dd>Working when <b>nothing is happening</b> — which is most evenings. The hero is never empty, so the app always has something to say.</dd></div>
+          <div><dt>Best at</dt><dd>Working when <b>nothing is happening</b>, which is most evenings. The hero is never empty, so the app always has something to say.</dd></div>
           <div><dt>Costs you</dt><dd>The hero eats a third of the screen. On a genuinely busy night you see two alerts before scrolling.</dd></div>
           <div><dt>Serves</dt><dd>Risk 3, insufficient density. Calm reads as <b>working</b>, not broken.</dd></div>
           <div><dt>Lineage</dt><dd><a class="reflink" href="https://mobbin.com/screens/bcc14120-8d50-49e4-b276-cd6f0a420e82" target="_blank" rel="noopener">Apple Weather ↗</a><a class="reflink" href="https://mobbin.com/screens/489f1028-efa5-4e59-a832-d02a12350d77" target="_blank" rel="noopener">Jomo ↗</a><a class="reflink" href="https://mobbin.com/screens/e36b5e4e-8334-43c8-a1a4-4f71ea9f8043" target="_blank" rel="noopener">Hers ↗</a></dd></div>
@@ -272,9 +275,9 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
       <div class="phone dirB" id="pB" data-state="busy"></div>
       <div class="why">
         <dl>
-          <div><dt>Best at</dt><dd>Scale and speed. Scans in one pass, holds twelve alerts without feeling heavy, and is <b>legible at night</b> — when outages and security incidents actually happen.</dd></div>
+          <div><dt>Best at</dt><dd>Scale and speed. Scans in one pass, holds twelve alerts without feeling heavy, and is <b>legible at night</b>, when outages and security incidents actually happen.</dd></div>
           <div><dt>Costs you</dt><dd>Dark plus red is one design decision away from alarming. The hero has to be chosen by the system, and it will sometimes choose wrong.</dd></div>
-          <div><dt>Serves</dt><dd>Risk 1, notification fatigue — the visual hierarchy does the triage the notification tiers cannot.</dd></div>
+          <div><dt>Serves</dt><dd>Risk 1, notification fatigue. The visual hierarchy does the triage the notification tiers cannot.</dd></div>
           <div><dt>Lineage</dt><dd><a class="reflink" href="https://mobbin.com/screens/5089f476-5308-4b7b-8109-5dcd49fde77e" target="_blank" rel="noopener">Finimize ↗</a><a class="reflink" href="https://mobbin.com/screens/542078d1-1825-4173-b0ca-d7dd319796a7" target="_blank" rel="noopener">HYPE ↗</a><a class="reflink" href="https://mobbin.com/screens/e5edba8c-1cc6-475d-a503-be9f51b42cba" target="_blank" rel="noopener">Ultrahuman ↗</a></dd></div>
         </dl>
       </div>
@@ -284,14 +287,14 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
       <div class="dirhead">
         <p class="dirnum">Direction C</p>
         <h2 class="dirname">Proximity</h2>
-        <p class="dirone">Map first. Relevance is shown rather than described — you see that the flooding is between you and the main road, and the sheet rises to meet how much is going on.</p>
+        <p class="dirone">Map first. Relevance is shown rather than described. You see that the flooding is between you and the main road, and the sheet rises to meet how much is going on.</p>
       </div>
       <div class="phone dirC" id="pC" data-state="busy"></div>
       <div class="why">
         <dl>
-          <div><dt>Best at</dt><dd>Making location feel like a <b>first-class part of the model</b>, exactly as the PRD argues. Direction and betweenness are free — no copy needed.</dd></div>
+          <div><dt>Best at</dt><dd>Making location feel like a <b>first-class part of the model</b>, exactly as the PRD argues. Direction and betweenness are free, with no copy needed.</dd></div>
           <div><dt>Costs you</dt><dd>A map asks the reader to interpret; a list tells them. Heavier on data and battery, and weakest on the cheap phones and thin connections this is built for.</dd></div>
-          <div><dt>Serves</dt><dd>The relevance problem in §21 — but contradicts §27, which says the map should not become the product.</dd></div>
+          <div><dt>Serves</dt><dd>The relevance problem in §21, but it contradicts §27, which says the map should not become the product.</dd></div>
           <div><dt>Lineage</dt><dd><a class="reflink" href="https://mobbin.com/screens/588dc1da-6044-41f1-9b32-1201b1834fd5" target="_blank" rel="noopener">Tesla Robotaxi ↗</a><a class="reflink" href="https://mobbin.com/screens/a4ec0daa-215a-4380-8b27-fcd525c5c9bd" target="_blank" rel="noopener">Too Good To Go ↗</a><a class="reflink" href="https://mobbin.com/screens/51be1ff0-2146-486d-9c1a-6d89ff7747d3" target="_blank" rel="noopener">Meetup ↗</a></dd></div>
         </dl>
       </div>
@@ -300,10 +303,12 @@ h1{font-family:var(--f-b);font-weight:800;font-size:clamp(30px,4.4vw,44px);line-
 
   <div class="foot">
     <h2>If you want a recommendation</h2>
-    <p><b>B, with A's hero as its quiet state.</b> Signal is the one that still works on the night four things are happening at once, and it is the only one of the three that would make someone say the app looks good. Its real weakness is the opposite case — an empty dark screen reads as a dead app — and that is exactly what Direction A's ambient hero is for.</p>
-    <p>C is the most distinctive and the riskiest. It is the right answer if you believe people will open this app <i>while moving</i> — driving home, walking to the gate. It is the wrong answer if they mostly open it sitting down after a notification, which is what the notification-first model in the audit assumes.</p>
+    <p><b>B, with A's hero as its quiet state.</b> Signal is the one that still works on the night four things are happening at once, and it is the only one of the three that would make someone say the app looks good. Its real weakness is the opposite case, an empty dark screen that reads as a dead app, and that is exactly what Direction A's ambient hero is for.</p>
+    <p>C is the most distinctive and the riskiest. It is the right answer if you believe people will open this app <i>while moving</i>, driving home or walking to the gate. It is the wrong answer if they mostly open it sitting down after a notification, which is what the notification-first model in the audit assumes.</p>
     <p>Tell me which one, and I will rebuild the other twelve screens in it.</p>
   </div>
+
+  <footer class="credit">Built by <a href="https://x.com/__Smute" target="_blank" rel="noopener">Smute</a></footer>
 </div>
 
 <script>
@@ -337,7 +342,7 @@ const D=[
   p:'They have circled the estate gate three times in ten minutes.'},
  {id:'road',k:'road',cat:'Road blocked',t:'Tree down across the road at the junction',
   short:'Tree down at the junction',d:'0.7',ago:'8 min',trust:'ok',n:14,
-  p:'Both lanes blocked on Isaac John St. Northbound is impassable — cars are turning back toward Allen.'},
+  p:'Both lanes blocked on Isaac John St. Northbound is impassable. Cars are turning back toward Allen.'},
  {id:'power',k:'power',cat:'Power outage',t:'Power out across the estate since 7:10 PM',
   short:'Power out since 7:10 PM',d:'1.1',ago:'32 min',trust:'multi',n:47,
   p:'No light on Isaac John, Oduduwa or Sowemimo.'},

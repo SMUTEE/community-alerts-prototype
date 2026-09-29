@@ -1,8 +1,8 @@
-# Community Alerts — interactive prototype
+# Community Alerts System
 
-A clickable prototype for **Community Alerts**, a location-aware platform for
-reporting and verifying things happening in your immediate area — a blocked
-road, an outage, an incident at the estate gate.
+An interactive prototype of a location-aware platform for reporting and
+verifying things happening in your immediate area: a blocked road, an outage,
+an incident at the estate gate.
 
 Thirteen screens, all live. Nothing is wired to a backend: confirmations,
 toggles and the reporting flow mutate in-memory state so the flows can be
@@ -24,7 +24,7 @@ all live.
 Four things worth trying:
 
 - **Home → the security alert.** Red because it is serious, but its status is
-  deliberately quiet — *unverified, 1 report* — and it says outright that it has
+  deliberately quiet, *unverified, 1 report*, and it says outright that it has
   not been sent to anyone. Confirm it and watch that change. One person alone
   cannot ring hundreds of phones.
 - **Home → water rising at the underpass.** An hour old, so it asks *is this
@@ -44,7 +44,7 @@ Four things worth trying:
 
 ## Running locally
 
-No build step and no dependencies — one HTML file plus a font.
+No build step and no dependencies. One HTML file plus a font.
 
 ```
 python3 -m http.server 8000
@@ -57,3 +57,7 @@ directly, so the font loads.
 
 Any static host works. On Vercel, import the repo and accept the defaults;
 `vercel.json` sets long-lived caching on the font and nothing else.
+
+---
+
+Built by [Smute](https://x.com/__Smute).
