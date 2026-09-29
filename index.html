@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#09090A">
-<meta name="description" content="A clickable hi-fi prototype of Community Alerts — a location-aware community alerting app — across 13 screens, with the experience audit attached to each one.">
+<meta name="description" content="An interactive prototype of Community Alerts — see what is happening around you, report it, and confirm what others report.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Community Alerts — hi-fi prototype">
-<meta property="og:description" content="A clickable hi-fi prototype of Community Alerts — a location-aware community alerting app — across 13 screens, with the experience audit attached to each one.">
+<meta property="og:title" content="Community Alerts">
+<meta property="og:description" content="An interactive prototype of Community Alerts — see what is happening around you, report it, and confirm what others report.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309090A'/%3E%3Cpath d='M16 7.5C12.4 7.5 9.5 10.4 9.5 14c0 4.6 6.5 10.5 6.5 10.5S22.5 18.6 22.5 14c0-3.6-2.9-6.5-6.5-6.5z' fill='none' stroke='%23FAFAFA' stroke-width='2'/%3E%3Ccircle cx='16' cy='13.8' r='2.2' fill='%23FF5F52'/%3E%3C/svg%3E">
 <style>
   html,body{height:100%}
@@ -94,12 +94,16 @@ h1{font-size:clamp(30px,4.6vw,42px);font-weight:700;line-height:1;letter-spacing
 .t-keep{background:#E3EFEA;color:#245542}
 .t-risk{background:#F9E7E5;color:#7E251D}
 .t-ref{background:var(--pg-2);color:var(--ink-2);border:1px solid var(--line)}
+.t-do{background:#E3EFEA;color:#245542}
+.t-see{background:var(--pg-2);color:var(--ink-2);border:1px solid var(--line)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-fix{background:#2C2416;color:#E5BC72}
  :root:not([data-theme="light"]) .t-keep{background:#15291F;color:#7FCFA8}
  :root:not([data-theme="light"]) .t-risk{background:#2C1917;color:#F0968B}}
 :root[data-theme="dark"] .t-fix{background:#2C2416;color:#E5BC72}
 :root[data-theme="dark"] .t-keep{background:#15291F;color:#7FCFA8}
 :root[data-theme="dark"] .t-risk{background:#2C1917;color:#F0968B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-do{background:#15291F;color:#7FCFA8}}
+:root[data-theme="dark"] .t-do{background:#15291F;color:#7FCFA8}
 .note p{margin:0;font-size:13.5px;line-height:1.62;color:var(--ink);max-width:60ch}
 .note p b{font-weight:600}
 .refs{margin-top:8px}
@@ -362,11 +366,11 @@ textarea::placeholder{color:var(--fg-3)}
 <div class="wrap">
   <header class="head">
     <div>
-      <p class="eyebrow">Hi-fi prototype · v2 · Direction B</p>
+      <p class="eyebrow">Interactive prototype · not a real service</p>
       <h1>Community Alerts</h1>
-      <p class="lede">Thirteen screens, all live. Open an alert and confirm it, file a report, mute a tier. The audit for each screen sits alongside it.</p>
+      <p class="lede">Community Alerts tells you what is happening in your immediate area — a blocked road, an outage, an incident at the gate — while it still changes what you would do. Thirteen screens, all clickable. Pick one on the left, and the panel on the right explains what you are looking at and what you can try.</p>
     </div>
-    <span class="tag">Satoshi · Inter · Ikeja GRA</span>
+    <span class="tag">Nothing here is saved or sent</span>
   </header>
 
   <div class="bench">
@@ -804,63 +808,50 @@ function permMap(){return '<svg viewBox="0 0 244 78" preserveAspectRatio="xMidYM
  '<rect width="244" height="78" fill="#2A2A2D"/><g stroke="#333336" stroke-width="9"><path d="M-10 24 H254"/><path d="M-10 60 H254"/><path d="M80 -10 V88"/><path d="M170 -10 V88"/></g>'+
  '<circle cx="122" cy="42" r="24" fill="#4FA8F7" opacity=".2"/><circle cx="122" cy="42" r="6" fill="#4FA8F7" stroke="#2A2A2D" stroke-width="2.2"/></svg>';}
 const NOTES={
-ob1:{t:'Value first',job:'Say what the product is for before asking for anything. This screen has to earn the permission prompt two screens later.',
- n:[['keep','Positioning','Leads on <b>“in time to matter”</b>, not on danger. §47 asks for calm and useful; an app that opens with sirens teaches people to dread opening it.'],
-    ['fix','Three examples, not a feature list','Naming the blocked road, the outage and the gate incident lets people recognise their own week in it.'],
-    ['ref','Pattern','Viator primes location with a reason before the OS dialog. GO Club asks with no reason at all, and it reads as a demand.','https://mobbin.com/flows/247308cf-b335-49b7-9644-bb99eabc7217|Viator priming']]},
-ob2:{t:'Where to watch',job:'Turn the four location modes of §8 into one question a person can answer.',
- n:[['fix','Four modes, two choices','Showing all four on first run is a quiz. <b>Current</b> and <b>pinned</b> cover the first session; followed and temporary places belong in Places, once there is a reason to want them.'],
-    ['keep','The privacy promise sits on the screen that asks','“About 500 m, never your exact street” is next to the button that turns it on, not buried in a policy.'],
-    ['keep','Skip is a real path','It lands on the quiet-area screen, so a refusal is still a working app.']]},
-ob3:{t:'The permission moment',job:'The one screen you cannot design. Everything before it is the design.',
- n:[['keep','Ask after the reason','By now the person has read what it is for and chosen it. That ordering is the whole trick.'],
-    ['risk','“Don’t Allow” goes somewhere useful','Roughly a third will decline. Tapping it here lands on the quiet area with pinned places offered — not a nag screen.']]},
-home:{t:'Home',job:'Answer one question in the first screenful: is anything happening around me that I should know about?',
- n:[['fix','One alert is promoted, the rest are a stream','The hero is chosen by distance and confidence together. Everything else gets a tight row where <b>distance is the left margin</b> and severity is a colour tick — no card chrome, no counts, no hearts.'],
-    ['risk','The unverified critical alert is the riskiest thing in the product','A single-source security report is what gets weaponised (§24). It is severe in colour but <b>quiet in status</b>, and it says outright that it has not been sent to anyone.'],
-    ['fix','Confidence gates delivery','§22 tiers notifications by category, which still lets one anonymous person ring 180 phones. An unconfirmed critical report goes to the feed and waits.'],
-    ['fix','No engagement furniture','No view counts, no reactions, no infinite scroll. Citizen’s feed leads with video and nationwide news; that is the drift §37 warns about.'],
-    ['ref','Pattern','Finimize and HYPE for the promoted-hero-then-stream shape; Ultrahuman for the metadata-led row.','https://mobbin.com/screens/5089f476-5308-4b7b-8109-5dcd49fde77e|Finimize']]},
-detail:{t:'Alert detail',job:'The trust screen. Everything here helps someone decide whether to act.',
- n:[['fix','Two questions, asked at different times','§17 offers “Confirm / Not accurate”; §19 asks “Is this still happening?”. Those measure <b>accuracy</b> and <b>liveness</b>, and mixing them corrupts the confidence score and the lifecycle. Open the flooding alert for the aged version.'],
-    ['keep','Timeline instead of comments','§32 is right to hold comments back. The timeline gives what comments are actually used for — what changed — without the arguing.'],
-    ['fix','Say why the answer matters','Without that line, a confirm button is just another like.'],
-    ['risk','The pin is snapped to the junction','§26 protects pinned places, but proposing the reporter’s live position as the alert location publishes where they stood. For security categories that can identify them.']]},
-map:{t:'Map',job:'Geographic overview. Useful, and deliberately not the front door.',
- n:[['keep','Feed first, map second','§27 says the map should not become the product. A map asks you to interpret; a list tells you.'],
-    ['fix','Confidence shows on the pin','The unconfirmed security pin is a dashed outline, not a solid chip. A map where every pin looks equally true is a misinformation surface.'],
-    ['keep','Your alert radius is drawn','Makes “who gets told about things here” legible without a settings screen.']]},
-cat:{t:'What happened',job:'Step one of reporting. It has to survive one hand, in the rain, while upset.',
- n:[['fix','Five steps became two','§11–15 specify category → location → description → audience → confirm. Location is known, audience is derivable, and confirmation belongs beside the send button. <b>Category, then one review screen.</b>'],
-    ['keep','Structured categories','Free text costs time and makes routing impossible.'],
-    ['ref','Pattern','Apple Maps reports an incident in three taps with no text at all. Speed is the feature.','https://mobbin.com/flows/b2ae1786-5fc7-44e2-a9b7-47c599e0b6fd|Apple Maps']]},
-review:{t:'Review and send',job:'Four PRD steps on one screen, with the consequence next to the button that causes it.',
- n:[['fix','Audience is a consequence, not a control','§14 asks the reporter to set a radius. Nobody reporting a fire thinks in kilometres, and the category already implies the answer. Shown as a number, with Adjust for the few who need it — the biggest speed win in the flow.'],
-    ['fix','Direction for road incidents','§21 names the problem — a circle is wrong for a blocked road — then defers it. A direction chip is a cheap partial fix with no routing engine.'],
-    ['keep','Confirmation merged into the send bar','Same protection as §15’s confirm step, one screen fewer.'],
-    ['ref','Pattern','Citizen puts “2434 nearby users will be notified” under Send. Consequence stated, not delegated.','https://mobbin.com/flows/f5a8ff74-f330-42da-9c4e-2727f53b52d1|Citizen create']]},
-sent:{t:'Sent',job:'Close the loop, and teach the trust model at the only moment anyone is paying attention to it.',
- n:[['fix','Tell them what did not happen','For a critical category this says plainly that <b>no notification has gone out</b>, and why. It also quietly discourages the person filing a false alarm.'],
-    ['fix','Resolution is scheduled here','§34 lets the creator resolve an alert but gives them no reason to return. The promised check-in is what keeps the feed clean.'],
-    ['keep','No score, no badge','§23 warns against a popularity contest. Nothing rewards reporting volume.']]},
-places:{t:'Places',job:'Make the four location modes manageable, and the privacy claims of §25 and §26 visible.',
- n:[['keep','Current, pinned and followed are separate groups','Three groups, three meanings.'],
-    ['fix','Each place carries its own notification level','§29 asks for per-place radius, categories and preference. Shown as one summary line; the detail is a level deeper.'],
-    ['risk','State the guarantee where it is doubted','“Other people cannot tell that anyone has pinned a given house” is the §26 requirement, written where someone decides whether to pin their home.']]},
-notif:{t:'Notifications',job:'The screen that decides whether this survives contact with real users. §50 names fatigue as risk one.',
- n:[['fix','A floor and a ceiling','Full control lets someone mute the fire alert and then blame the app; no control produces fatigue. <b>Critical cannot be switched off, and is capped at four a day.</b> Everything else is yours.'],
-    ['fix','Batching stated on the row','“At most one an hour” is a promise you can be held to, and it is what stops forty outage reports making forty buzzes.'],
-    ['risk','Never paywall this screen','Citizen gates alert customisation behind a subscription, so the free experience is the noisy one. For a product whose main risk is fatigue, that is backwards.'],
-    ['ref','Pattern','YouTube Studio ships a row with no toggle at all — the precedent for an always-on tier.','https://mobbin.com/screens/1a75c9de-4f7f-4d1d-8fb5-468adf1b3405|YouTube Studio']]},
-lock:{t:'Lock screen',job:'The real product surface. Most alerts are read and acted on here and never opened.',
- n:[['fix','§49 lists it and the PRD never designs it','If the notification does not carry enough to act on, the product has failed however good the feed is.'],
-    ['fix','Trust rides along','“14 people nearby confirmed” is in the notification body. Without it, the whole §18 system is invisible to the people who most need it.'],
-    ['keep','Distance and direction in the first line','The two facts that change what someone does next.']]},
-empty:{t:'Quiet area',job:'The most likely first experience in a new community, and the one §42 leaves undesigned.',
- n:[['risk','Cold start is a design problem first','The first person in an estate opens the app to nothing, and an empty list reads as broken.'],
-    ['fix','Show coverage, not content','“47 people watching” proves the app works <i>and</i> the area is calm — two different things an empty list cannot separate.'],
-    ['keep','Quiet is the good outcome','The copy says so rather than apologising for having nothing.'],
-    ['fix','The two exits are the two fixes','Inviting neighbours raises density; following another place gives the app something to show tonight. Both work on §43.']]}
+ob1:{t:'Welcome',job:'The first thing a new user sees. It shows a live slice of the map so the app explains itself before it asks for anything.',
+ n:[['see','What you are looking at','Four live alerts around Ikeja GRA, a fictional estate in Lagos. The blue dot is you; the dashed circle is the area you get alerted about. The <b>red dashed pin</b> is a report nobody has confirmed yet — it looks different on purpose.'],
+    ['do','Try it','Tap <b>Get started</b> to move on to choosing a location.']]},
+ob2:{t:'Choosing a location',job:'How the app decides what counts as “near you”. You can follow somewhere you are not.',
+ n:[['see','What you are looking at','Three promises: a rough area rather than your street, places you pick yourself, and no sharing of your position with anyone.'],
+    ['do','Try it','<b>Use where I am</b> brings up the iOS permission prompt. <b>Skip for now</b> goes straight to the feed — refusing is a supported path, not a dead end.']]},
+ob3:{t:'Location permission',job:'The system prompt. The screens before it exist to make this one make sense.',
+ n:[['see','What you are looking at','A real iOS location dialog, shown only after the person has been told what it is for.'],
+    ['do','Try it','<b>Allow</b> opens the feed. <b>Don’t Allow</b> takes you to screen 13, the quiet area — the app still works, it just watches a place you pick instead.']]},
+home:{t:'Home',job:'The main screen, and the one question the whole product answers: is anything happening around me that I should know about?',
+ n:[['see','What you are looking at','One alert is promoted to the top — chosen by distance and confidence together. Below it, a stream ordered by how close and how recent. Distance runs down the left edge so you can scan by proximity. The coloured tick before each category is severity.'],
+    ['see','The security alert','Second in the stream, and the most important thing on this screen. It is red because it is serious, but its status is deliberately quiet — <b>Unverified · 1 report</b> — and it states that it has <b>not been sent to anyone</b> as a notification. One person alone cannot ring hundreds of phones.'],
+    ['do','Try it','Tap any alert to open it. The <b>bell</b> opens notification settings, and the <b>+</b> in the tab bar starts a report.']]},
+detail:{t:'Alert detail',job:'Everything known about one alert, and where you tell the community whether it is true.',
+ n:[['see','What you are looking at','A timeline of what changed and when, rather than a comment thread. The small map is pinned to the junction, not to whoever reported it, so reporting something does not reveal where you were standing.'],
+    ['do','Answer the question','Tap <b>I see it</b> and watch the confirmation count rise and the trust state change. On the security alert this also clears the held-from-notifications warning — it has been corroborated, so now it can be sent.'],
+    ['do','Try the aged one','Go back and open <b>Water rising around the underpass</b>. It is an hour old, so it asks <i>is this still happening?</i> instead of <i>did this happen?</i> Answering “it’s over” resolves it.']]},
+map:{t:'Map',job:'The same alerts, placed. Useful for seeing what sits between you and where you are going.',
+ n:[['see','What you are looking at','Your position, your alert radius as the dashed ring, and a pin per alert. The <b>dashed outline pin</b> is the unconfirmed one — a map where every pin looks equally true would be misleading.'],
+    ['do','Try it','Tap any pin to load that alert into the sheet at the bottom, then tap the card to open it in full.']]},
+cat:{t:'Reporting — what happened',job:'Step one of filing a report. It has to work one-handed, in the rain, by someone who is upset.',
+ n:[['see','What you are looking at','Eight categories covering safety, transport, utilities and community notices. Structured rather than free text, because the category is what decides who gets told and how loudly.'],
+    ['do','Try it','Pick any category. <b>Security</b> or <b>Fire</b> are worth trying — they behave differently at the end of the flow.']]},
+review:{t:'Reporting — check and send',job:'Everything else about the report on one screen, with the consequence sitting right above the button that causes it.',
+ n:[['see','What you are looking at','The location is already filled in and snapped to the nearest junction. The audience is <b>calculated from the category</b>, not asked of you — a road blockage reaches along the road, an outage reaches wider.'],
+    ['do','Try it','Type a description, or do not — it is optional. Tap <b>Adjust</b> to change the radius and watch the number of people update, and for a road report, to set which direction is affected.'],
+    ['do','Then send','Tap <b>Send alert</b>.']]},
+sent:{t:'Report sent',job:'Confirmation, and an honest account of what happens next.',
+ n:[['see','What you are looking at','For an ordinary category this tells you how many phones it reached. For <b>Security</b> or <b>Fire</b> it says the opposite — that no notification has gone out yet, and someone else nearby has to confirm it first.'],
+    ['do','Compare them','Go back to screen 07, file a <b>power outage</b>, and compare this screen with what you get after filing a <b>security</b> report.']]},
+places:{t:'Places',job:'Everywhere you are watching — where you are now, places you pinned, and areas you follow.',
+ n:[['see','What you are looking at','Three groups, three different meanings. Each place carries its own alert radius and its own notification level, summarised on one line.'],
+    ['see','On privacy','Pinned places are never published. Nobody can tell that anyone has pinned a particular house or street, and your live location is kept as a rough area rather than an address.'],
+    ['do','Try it','Toggle <b>Where I am</b> off and on.']]},
+notif:{t:'Notifications',job:'What is allowed to interrupt you. For an app like this, getting it wrong is what makes people delete it.',
+ n:[['see','What you are looking at','Three tiers. <b>Critical</b> interrupts, <b>Important</b> notifies and batches, and the rest stays in the feed with no notification at all.'],
+    ['see','The critical rows have no switch','They say <i>Always on</i> instead. That is the promise the app makes — but it is capped at four a day however many are reported, and an unconfirmed report never becomes one.'],
+    ['do','Try it','Toggle anything in <b>Important</b> or <b>For the feed</b>. The critical rows will not move.']]},
+lock:{t:'Lock screen',job:'How an alert actually arrives. Most people will read it here and act on it without ever opening the app.',
+ n:[['see','What you are looking at','Distance and direction in the headline, because those are the two facts that change what you do next. Underneath, the trust state — <b>14 people nearby confirmed</b> — so an alert is never an anonymous claim.'],
+    ['see','The faded second one','That is a batched outage notification. Forty-seven people reported the same blackout and it produced one quiet notification, not forty-seven.']]},
+empty:{t:'A quiet area',job:'What you see when nothing is happening — which, in a healthy community, is most evenings.',
+ n:[['see','What you are looking at','Coverage instead of content. <b>47 people watching this area</b> tells you the app is working and the area is calm; an empty list cannot tell those two apart and just looks broken.'],
+    ['do','Try it','The two buttons are the two things that actually help: more neighbours watching, or following somewhere with more going on.']]}
 };
 
 const ORDER=['ob1','ob2','ob3','home','detail','map','cat','review','sent','places','notif','lock','empty'];
@@ -873,15 +864,15 @@ function render(){
  document.querySelectorAll('.nav-b').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===S.screen)));
  document.getElementById('cap').textContent=NUM[S.screen]+' — '+CAP[S.screen];
  const n=NOTES[S.screen];
- document.getElementById('n-eye').textContent='Screen '+NUM[S.screen]+' · audit';
+ document.getElementById('n-eye').textContent='Screen '+NUM[S.screen]+' of 13';
  document.getElementById('n-title').textContent=n.t;
  document.getElementById('n-job').textContent=n.job;
  document.getElementById('n-notes').innerHTML=n.n.map(x=>{
-  const c={fix:'t-fix',keep:'t-keep',risk:'t-risk',ref:'t-ref'}[x[0]];
-  const l={fix:'Changed',keep:'Kept',risk:'Risk',ref:'Reference'}[x[0]];
+  const c={do:'t-do',see:'t-see'}[x[0]]||'t-see';
+  
   let b='<p>'+x[2]+'</p>';
   if(x[0]==='ref'&&x[3]){const[h,t]=x[3].split('|');b+='<div class="refs"><a href="'+h+'" target="_blank" rel="noopener">'+t+' ↗</a></div>';}
-  return '<div class="note"><span class="n-tag '+c+'">'+l+' · '+x[1]+'</span>'+b+'</div>';
+  return '<div class="note"><span class="n-tag '+c+'">'+x[1]+'</span>'+b+'</div>';
  }).join('');
  wire();
 }
