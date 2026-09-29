@@ -4,7 +4,7 @@ An interactive prototype of a location-aware platform for reporting and
 verifying things happening in your immediate area: a blocked road, an outage,
 an incident at the estate gate.
 
-**[Open the prototype](https://community-alerts-prototype.vercel.app)**
+**[Open it](https://community-alerts-prototype.vercel.app)**
 
 Thirteen screens, all live. Nothing is wired to a backend: confirmations,
 toggles and the reporting flow mutate in-memory state so the flows can be
@@ -14,7 +14,8 @@ walked end to end. Nothing you do is saved or sent anywhere.
 
 | Route | What it is |
 | --- | --- |
-| `/` | The prototype. Pick a screen on the left; the panel on the right explains what you are looking at and what you can try. |
+| `/` | The landing page. What the product is, how it works, and why the trust model is the hard part. |
+| `/prototype` | The prototype. Pick a screen on the left; the panel on the right explains what you are looking at and what you can try. |
 | `/directions` | The three visual directions explored for the home screen before this one was chosen. |
 
 ## Walking it
@@ -46,7 +47,7 @@ Four things worth trying:
 
 ## Running locally
 
-No build step and no dependencies. One HTML file plus a font.
+No build step and no dependencies. Static HTML plus a font.
 
 ```
 python3 -m http.server 8000

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#09090A">
-<meta name="description" content="An interactive prototype of the Community Alerts System. See what is happening around you, report it, and confirm what other people report.">
+<meta name="description" content="A location-aware system for reporting and verifying what is happening in your immediate area, and telling the people it affects in time to act.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Community Alerts System">
-<meta property="og:description" content="An interactive prototype of the Community Alerts System. See what is happening around you, report it, and confirm what other people report.">
+<meta property="og:description" content="A location-aware system for reporting and verifying what is happening in your immediate area, and telling the people it affects in time to act.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309090A'/%3E%3Cpath d='M16 7.5C12.4 7.5 9.5 10.4 9.5 14c0 4.6 6.5 10.5 6.5 10.5S22.5 18.6 22.5 14c0-3.6-2.9-6.5-6.5-6.5z' fill='none' stroke='%23FAFAFA' stroke-width='2'/%3E%3Ccircle cx='16' cy='13.8' r='2.2' fill='%23FF5F52'/%3E%3C/svg%3E">
 <style>
   html,body{height:100%}
@@ -21,915 +21,383 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <style>
-@font-face{font-family:Satoshi;src:url('satoshi.woff2') format('woff2');font-weight:300 900;font-style:normal;font-display:swap}
+@font-face{font-family:Satoshi;src:url('/satoshi.woff2') format('woff2');font-weight:300 900;font-style:normal;font-display:swap}
 
-/* Layout: quiet studio bench. Index, device, and the audit note for the open screen; one column under 940px. */
+/* Layout: a single dark column. Full-bleed sections, one 1120px measure inside each, everything stacking to one column under 860px. */
 :root{
-  --pg:#E9EAEA; --pg-2:#F6F7F7; --card:#FFFFFF; --ink:#131415; --ink-2:#5C6164;
-  --ink-3:#8D9295; --line:#D3D6D7; --accent:#12494F; --shadow:0 28px 64px -20px rgba(9,17,20,.42);
-  --f:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  --f-u:"Inter",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
-
-  /* App palette, fixed in both themes: this is the product */
-  --bg:#09090A; --surf:#131315; --surf-2:#1A1A1D; --raise:#202024;
+  --bg:#09090A; --surf:#131315; --surf-2:#18181B; --raise:#1F1F23;
   --fg:#FAFAFA; --fg-2:#A2A3A7; --fg-3:#6C6D72; --hair:#1E1E21; --hair-2:#2A2A2E;
   --crit:#FF5F52; --imp:#E9A13B; --info:#6BA8D8; --ok:#4FC48A;
   --crit-d:#2A1513; --imp-d:#241C10; --info-d:#131E27; --ok-d:#10231A;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --pg:#0C0C0D; --pg-2:#151517; --card:#1A1A1C; --ink:#F0F0F1; --ink-2:#A0A2A5;
-  --ink-3:#77797D; --line:#2A2A2D; --accent:#68BAC2; --shadow:0 28px 64px -20px rgba(0,0,0,.8);
-  color-scheme:dark;
-}}
-:root[data-theme="dark"]{
-  --pg:#0C0C0D; --pg-2:#151517; --card:#1A1A1C; --ink:#F0F0F1; --ink-2:#A0A2A5;
-  --ink-3:#77797D; --line:#2A2A2D; --accent:#68BAC2; --shadow:0 28px 64px -20px rgba(0,0,0,.8);
+  --f:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-u:"Inter",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--pg);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:5px}
+:focus-visible{outline:2px solid var(--ok);outline-offset:3px;border-radius:6px}
 .u{font-family:var(--f-u);font-feature-settings:"tnum" 1}
+.m{max-width:1120px;margin:0 auto;padding-inline:24px}
+.lab{font-family:var(--f-u);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+section{border-top:1px solid var(--hair)}
 
-/* ---------- bench ---------- */
-.wrap{max-width:1280px;margin:0 auto;padding-inline:22px;padding-block:34px 58px}
-.head{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:20px}
-.eyebrow{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
-h1{font-size:clamp(30px,4.6vw,42px);font-weight:700;line-height:1;letter-spacing:-.035em;margin:0}
-.lede{margin:11px 0 0;max-width:62ch;font-size:14.5px;line-height:1.6;color:var(--ink-2)}
-.tag{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap}
-
-.bench{display:grid;grid-template-columns:186px minmax(0,390px) minmax(0,1fr);gap:32px;align-items:start;margin-top:30px}
-@media (max-width:1040px){.bench{grid-template-columns:166px minmax(0,390px) minmax(0,1fr);gap:22px}}
-@media (max-width:940px){.bench{grid-template-columns:minmax(0,1fr);justify-items:center;gap:28px}.nav-col,.notes-col{width:100%;max-width:520px}}
-
-.nav-col{position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px)}
-@media (max-width:940px){.nav-col{position:static}}
-.nav-g{margin-bottom:20px}
-.nav-h{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px;padding-left:2px}
-.nav-l{display:flex;flex-direction:column;gap:1px}
-@media (max-width:940px){.nav-l{flex-direction:row;flex-wrap:wrap;gap:6px}}
-.nav-b{display:flex;align-items:center;gap:10px;text-align:left;padding:7px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink-2);line-height:1.3;transition:background .12s,color .12s}
-.nav-b .n{font-family:var(--f-u);font-size:10px;font-weight:500;color:var(--ink-3);flex-shrink:0}
-.nav-b:hover{background:var(--pg-2);color:var(--ink)}
-.nav-b[aria-current="true"]{background:var(--ink);color:var(--pg)}
-.nav-b[aria-current="true"] .n{color:var(--pg);opacity:.55}
-
-.dev{display:flex;flex-direction:column;align-items:center;gap:15px}
-.phone{width:390px;max-width:100%;aspect-ratio:390/800;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);box-shadow:var(--shadow),0 0 0 9px #141415,0 0 0 10.5px #383A3B}
-.pager{display:flex;gap:8px}
-.pg{border:1px solid var(--line);border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
-.pg:hover{border-color:var(--accent);color:var(--ink)}
-.cap{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
-
-.notes{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
-.n-eye{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
-.n-h{font-size:26px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px;line-height:1.08}
-.n-job{margin:0 0 20px;font-size:13.5px;line-height:1.6;color:var(--ink-2);max-width:58ch}
-.note{border-top:1px solid var(--line);padding-top:15px;margin-top:15px}
-.note:first-of-type{border-top:0;padding-top:0;margin-top:0}
-.n-tag{display:inline-block;font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;padding:4px 8px;border-radius:5px;margin-bottom:8px}
-.t-fix{background:#F6EEDC;color:#6E4C12}
-.t-keep{background:#E3EFEA;color:#245542}
-.t-risk{background:#F9E7E5;color:#7E251D}
-.t-ref{background:var(--pg-2);color:var(--ink-2);border:1px solid var(--line)}
-.t-do{background:#E3EFEA;color:#245542}
-.t-see{background:var(--pg-2);color:var(--ink-2);border:1px solid var(--line)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-fix{background:#2C2416;color:#E5BC72}
- :root:not([data-theme="light"]) .t-keep{background:#15291F;color:#7FCFA8}
- :root:not([data-theme="light"]) .t-risk{background:#2C1917;color:#F0968B}}
-:root[data-theme="dark"] .t-fix{background:#2C2416;color:#E5BC72}
-:root[data-theme="dark"] .t-keep{background:#15291F;color:#7FCFA8}
-:root[data-theme="dark"] .t-risk{background:#2C1917;color:#F0968B}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-do{background:#15291F;color:#7FCFA8}}
-:root[data-theme="dark"] .t-do{background:#15291F;color:#7FCFA8}
-.note p{margin:0;font-size:13.5px;line-height:1.62;color:var(--ink);max-width:60ch}
-.note p b{font-weight:600}
-.refs{margin-top:8px}
-.refs a{display:inline-block;font-family:var(--f-u);font-size:10.5px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:0 5px 5px 0}
-.refs a:hover{border-color:var(--accent);color:var(--accent)}
-.credit{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--f-u);font-size:12.5px;color:var(--ink-3)}
-.credit a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
-.credit a:hover{color:var(--accent);border-color:var(--accent)}
-
-/* =====================================================
-   APP: Direction B, refined
-   ===================================================== */
-.sc{flex:1;min-height:0;display:none;flex-direction:column}
-.sc[data-on="1"]{display:flex}
-.roll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
-.roll::-webkit-scrollbar{width:0}
-
-.sbar{flex-shrink:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 27px 0 31px;
-  font-family:var(--f-u);font-size:12.5px;font-weight:500;letter-spacing:-.01em;color:var(--fg);position:relative;z-index:9}
-.sb-r{display:flex;align-items:center;gap:5px}
-.sb-b{display:flex;align-items:flex-end;gap:1.6px;height:9px}
-.sb-b i{width:2.6px;background:currentColor;border-radius:1px;display:block}
-.batt{width:21px;height:10.5px;border:1.3px solid currentColor;border-radius:3px;position:relative;opacity:.85}
-.batt::after{content:"";position:absolute;inset:1.6px;right:5px;background:currentColor;border-radius:1px}
-
-/* type roles */
-.lab{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
-.met{font-family:var(--f-u);font-size:11px;font-weight:400;color:var(--fg-3);font-feature-settings:"tnum" 1}
-.h-xl{font-size:34px;font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0}
-.h-l{font-size:27px;font-weight:700;letter-spacing:-.035em;line-height:1.06;margin:0}
-.h-m{font-size:20px;font-weight:600;letter-spacing:-.028em;line-height:1.15;margin:0}
-.bd{font-size:14.5px;line-height:1.55;color:var(--fg-2);margin:0}
-
-/* header */
-.hdr{flex-shrink:0;padding:2px 22px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
-.hdr .sub{margin:8px 0 0;display:flex;align-items:center;gap:7px}
-.live{width:6px;height:6px;border-radius:50%;background:var(--crit);flex-shrink:0;animation:p 2.6s infinite}
-.live.calm{background:var(--ok);animation:none}
-@keyframes p{0%{box-shadow:0 0 0 0 rgba(255,95,82,.55)}70%{box-shadow:0 0 0 8px rgba(255,95,82,0)}100%{box-shadow:0 0 0 0 rgba(255,95,82,0)}}
-.circ{width:38px;height:38px;border-radius:50%;border:1px solid var(--hair-2);display:grid;place-items:center;color:var(--fg-2);flex-shrink:0;position:relative}
-.circ:hover{border-color:var(--fg-3);color:var(--fg)}
-.circ .pip{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--crit);border:2px solid var(--bg)}
-.segs{flex-shrink:0;display:flex;gap:24px;padding:0 22px;border-bottom:1px solid var(--hair)}
-.seg{font-size:14px;font-weight:600;letter-spacing:-.015em;color:var(--fg-3);padding:0 0 12px;position:relative}
-.seg[aria-selected="true"]{color:var(--fg)}
-.seg[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1.5px;background:var(--fg)}
-
-/* hero */
-.hero{margin:16px 16px 0;border-radius:20px;padding:20px 19px 18px;position:relative;overflow:hidden;text-align:left;width:calc(100% - 32px);display:block}
-.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(158deg,var(--hd) 0%,#0F0F11 70%);opacity:.9}
-.hero>*{position:relative}
-.hero .kick{display:flex;align-items:center;gap:8px;color:var(--hc);margin-bottom:13px}
-.hero .kick i{width:6px;height:6px;border-radius:50%;background:currentColor;display:block}
-.hero h3{font-size:29px;font-weight:700;letter-spacing:-.038em;line-height:1.03;margin:0;color:var(--fg);text-wrap:balance}
-.hero p{font-size:13.5px;line-height:1.5;color:var(--fg-2);margin:11px 0 0;max-width:31ch}
-.hero .row{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
-.chip{font-family:var(--f-u);font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:5px 9px;border-radius:6px;
-  background:rgba(255,255,255,.06);color:var(--fg-2);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.chip.good{background:rgba(79,196,138,.13);color:#7DD6AA}
-.chip.warn{background:rgba(233,161,59,.13);color:#EEBB74}
-
-/* stream */
-.strm{padding-top:4px}
-.item{display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;padding:16px 22px;border-bottom:1px solid var(--hair);text-align:left;width:100%;align-items:start}
-.item:hover{background:var(--surf)}
-.dist{font-family:var(--f-u);font-size:15px;font-weight:500;color:var(--fg);letter-spacing:-.02em;font-feature-settings:"tnum" 1;line-height:1.15}
-.dist span{display:block;font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:4px}
-.ibody{min-width:0}
-.icat{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--sc);display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.icat i{width:5px;height:5px;border-radius:50%;background:var(--sc);display:block;flex-shrink:0}
-.it{font-size:16.5px;font-weight:600;letter-spacing:-.028em;line-height:1.2;margin:0 0 7px;color:var(--fg);text-wrap:balance}
-.im{font-family:var(--f-u);font-size:11px;color:var(--fg-3);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-feature-settings:"tnum" 1}
-.im .v{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
-.im .un{color:var(--fg-3);border:1px dashed var(--hair-2);padding:2px 7px;border-radius:5px}
-.held{display:flex;gap:8px;align-items:flex-start;margin-top:9px;padding:9px 11px;border-radius:9px;background:var(--imp-d);color:#E8B975;font-size:11.5px;line-height:1.45}
-.held svg{flex-shrink:0;margin-top:1px}
-
-/* tabs */
-.tabs{flex-shrink:0;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(5,1fr);
-  padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px));align-items:center;background:var(--bg)}
-.tab{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--fg-3);font-family:var(--f-u);font-size:9.5px;font-weight:500;letter-spacing:.02em}
-.tab[aria-current="true"]{color:var(--fg)}
-.fab{width:42px;height:42px;border-radius:14px;background:var(--fg);color:var(--bg);display:grid;place-items:center}
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(9,9,10,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.mark{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.03em;text-decoration:none}
+.mark .gl{width:26px;height:26px;border-radius:8px;background:var(--fg);color:var(--bg);display:grid;place-items:center;flex-shrink:0}
+.nav-r{display:flex;align-items:center;gap:8px}
+.nl{font-family:var(--f-u);font-size:13px;font-weight:500;color:var(--fg-2);text-decoration:none;padding:9px 12px;border-radius:9px}
+.nl:hover{color:var(--fg);background:var(--surf)}
+@media (max-width:560px){.nl.hide-s{display:none}}
 
 /* buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border-radius:14px;padding:15px;font-size:15.5px;font-weight:600;letter-spacing:-.015em;background:var(--fg);color:var(--bg)}
-.btn:hover{opacity:.9}
-.btn.sec{background:transparent;color:var(--fg);border:1px solid var(--hair-2)}
-.btn.sec:hover{border-color:var(--fg-3);opacity:1}
-.btn.qui{background:transparent;color:var(--fg-3);font-weight:500}
-.btn.qui:hover{color:var(--fg-2);opacity:1}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.stack{display:flex;flex-direction:column;gap:9px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:600;letter-spacing:-.015em;text-decoration:none;background:var(--fg);color:var(--bg);transition:opacity .14s}
+.btn:hover{opacity:.88}
+.btn.sm{padding:9px 15px;font-size:13.5px;border-radius:10px}
+.btn.gh{background:transparent;color:var(--fg);border:1px solid var(--hair-2)}
+.btn.gh:hover{border-color:var(--fg-3);opacity:1}
 
-/* onboarding */
-.ob{flex:1;display:flex;flex-direction:column;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
-.ob-art{flex:1;min-height:0;display:grid;place-items:center;padding:10px 0}
-.dots{display:flex;gap:6px;justify-content:center;padding:16px 0 14px}
-.dots i{width:5px;height:5px;border-radius:50%;background:var(--hair-2);display:block}
-.dots i.on{background:var(--fg);width:17px;border-radius:3px}
-.pts{display:flex;flex-direction:column;gap:20px;margin:26px 0 0}
-.pt{display:grid;grid-template-columns:22px 1fr;gap:14px;align-items:start}
-.pt .pi{color:var(--fg-3);margin-top:2px}
-.pt h4{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}
-.pt p{margin:0;font-size:13px;line-height:1.5;color:var(--fg-3)}
+/* hero */
+.hero{padding-block:72px 0;position:relative}
+.hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:min(900px,100%);height:500px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(233,161,59,.11),transparent 66%)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:56px;align-items:center;position:relative}
+@media (max-width:920px){.hero-grid{grid-template-columns:minmax(0,1fr);gap:44px}}
+h1{font-size:clamp(40px,6.4vw,66px);font-weight:700;line-height:.99;letter-spacing:-.045em;margin:18px 0 0;text-wrap:balance;max-width:14ch}
+.hero p.sub{font-size:clamp(16px,2vw,18.5px);line-height:1.55;color:var(--fg-2);margin:22px 0 0;max-width:46ch}
+.cta{display:flex;gap:10px;margin-top:32px;flex-wrap:wrap}
+.hero-note{font-family:var(--f-u);font-size:12.5px;color:var(--fg-3);margin:18px 0 0}
+.ping{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--hair-2);border-radius:999px;padding:6px 13px 6px 10px;font-family:var(--f-u);font-size:11.5px;font-weight:500;color:var(--fg-2)}
+.ping i{width:6px;height:6px;border-radius:50%;background:var(--imp);display:block;animation:pulse 2.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(233,161,59,.55)}70%{box-shadow:0 0 0 8px rgba(233,161,59,0)}100%{box-shadow:0 0 0 0 rgba(233,161,59,0)}}
 
-/* onboarding map hero */
-.ob1{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
-.ob1-map{position:absolute;top:0;left:0;right:0;height:57%;overflow:hidden;pointer-events:none}
-.ob1-map .pin button{pointer-events:none}
-.ob1-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(9,9,10,.28) 0%,rgba(9,9,10,0) 30%,rgba(9,9,10,.55) 62%,rgba(9,9,10,.94) 84%,var(--bg) 100%)}
-.ob1-c{margin-top:auto;position:relative;z-index:2;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
+/* phone */
+.ph{width:320px;max-width:100%;margin:0 auto;border-radius:38px;background:var(--bg);box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 0 8px #141415,0 0 0 9px #33373A;overflow:hidden;font-size:14px}
+.ph-sb{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 25px;font-family:var(--f-u);font-size:11px;font-weight:500;letter-spacing:-.01em}
+.ph-sb .r{display:flex;gap:4px;align-items:center;opacity:.9}
+.ph-hd{padding:2px 17px 13px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.ph-hd h4{margin:0;font-size:25px;font-weight:700;letter-spacing:-.04em}
+.ph-hd .s{font-family:var(--f-u);font-size:10px;color:var(--fg-3);display:flex;align-items:center;gap:6px;margin-top:6px}
+.ph-hd .s i{width:5px;height:5px;border-radius:50%;background:var(--crit);display:block}
+.ph-sg{display:flex;gap:18px;padding:0 17px;border-bottom:1px solid var(--hair);font-size:11.5px;font-weight:600;color:var(--fg-3)}
+.ph-sg span{padding-bottom:9px}
+.ph-sg span.on{color:var(--fg);box-shadow:inset 0 -1.5px 0 var(--fg)}
+.ph-hero{margin:13px 12px 0;border-radius:16px;padding:15px 14px;background:linear-gradient(158deg,#231A12,#0F0F11 70%);border:1px solid rgba(255,255,255,.06)}
+.ph-hero .k{font-family:var(--f-u);font-size:8.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--imp);display:flex;align-items:center;gap:6px}
+.ph-hero .k i{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}
+.ph-hero h5{margin:10px 0 0;font-size:22px;font-weight:700;letter-spacing:-.038em;line-height:1.05}
+.ph-hero p{margin:8px 0 0;font-size:11.5px;line-height:1.45;color:var(--fg-2)}
+.ph-chips{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap}
+.ph-chip{font-family:var(--f-u);font-size:8.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:4px 7px;border-radius:5px;background:rgba(255,255,255,.06);color:var(--fg-2);display:inline-flex;align-items:center;gap:4px}
+.ph-chip.g{background:rgba(79,196,138,.13);color:#7DD6AA}
+.ph-it{display:grid;grid-template-columns:44px minmax(0,1fr);gap:11px;padding:13px 17px;border-bottom:1px solid var(--hair);align-items:start}
+.ph-d{font-family:var(--f-u);font-size:12.5px;font-weight:500;letter-spacing:-.02em;font-feature-settings:"tnum" 1;line-height:1.15}
+.ph-d span{display:block;font-size:8px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:3px}
+.ph-c{font-family:var(--f-u);font-size:8.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--sc);display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.ph-c i{width:4px;height:4px;border-radius:50%;background:var(--sc);display:block}
+.ph-t{font-size:13px;font-weight:600;letter-spacing:-.025em;line-height:1.2;margin:0 0 5px}
+.ph-m{font-family:var(--f-u);font-size:9px;color:var(--fg-3)}
+.ph-m .un{border:1px dashed var(--hair-2);padding:2px 6px;border-radius:4px}
+.ph-held{display:flex;gap:6px;margin-top:7px;padding:7px 8px;border-radius:7px;background:var(--imp-d);color:#E8B975;font-size:9.5px;line-height:1.4}
+.ph-tb{display:grid;grid-template-columns:repeat(5,1fr);padding:9px 6px 12px;border-top:1px solid var(--hair);align-items:center}
+.ph-tb span{display:grid;place-items:center;color:var(--fg-3)}
+.ph-tb span.on{color:var(--fg)}
+.ph-tb .fab{width:34px;height:34px;border-radius:11px;background:var(--fg);color:var(--bg)}
 
-/* iOS permission */
-.veil{position:absolute;inset:0;background:rgba(0,0,0,.62);display:grid;place-items:center;padding:30px;z-index:20}
-.perm{background:#1C1C1E;border-radius:15px;width:100%;max-width:270px;overflow:hidden;text-align:center;box-shadow:0 26px 54px -12px rgba(0,0,0,.6)}
-.perm-b{padding:19px 18px 0}
-.perm h5{margin:0 0 6px;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.02em}
-.perm p{margin:0 0 14px;font-size:12.5px;line-height:1.42;color:#98989E;font-family:var(--f-u)}
-.perm-map{height:78px;margin:0 -18px;position:relative;overflow:hidden;background:#2A2A2D}
-.perm-o{border-top:.5px solid #38383A}
-.perm-o button{display:block;width:100%;padding:12px;font-size:15px;color:#4FA8F7;border-bottom:.5px solid #38383A;font-family:var(--f-u)}
-.perm-o button:last-child{border-bottom:0}
-.perm-o button.b{font-weight:600}
-.perm-o button:hover{background:rgba(255,255,255,.05)}
+/* problem */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr);gap:36px}}
+h2{font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.04;letter-spacing:-.04em;margin:16px 0 0;text-wrap:balance;max-width:18ch}
+.sec-p{font-size:16px;line-height:1.6;color:var(--fg-2);margin:18px 0 0;max-width:48ch}
+.pad{padding-block:84px}
+@media (max-width:640px){.pad{padding-block:60px}}
+.chans{display:flex;flex-wrap:wrap;gap:7px;margin-top:26px}
+.chan{font-family:var(--f-u);font-size:12.5px;color:var(--fg-3);border:1px solid var(--hair-2);border-radius:999px;padding:7px 13px;text-decoration:line-through;text-decoration-color:var(--hair-2)}
+.fails{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.fail{padding:20px 0;border-top:1px solid var(--hair)}
+.fail:first-child{border-top:0;padding-top:0}
+.fail h3{margin:0 0 7px;font-size:17px;font-weight:600;letter-spacing:-.025em}
+.fail p{margin:0;font-size:14px;line-height:1.55;color:var(--fg-2);max-width:44ch}
 
-/* detail */
-.d-hero{padding:14px 22px 20px}
-.d-kick{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap}
-.d-cat{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--sc);display:flex;align-items:center;gap:7px}
-.d-cat i{width:5px;height:5px;border-radius:50%;background:var(--sc);display:block}
-.d-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
-.blk{padding:20px 22px;border-top:1px solid var(--hair)}
-.blk-h{margin:0 0 14px}
-.ask{background:var(--surf);border-radius:16px;padding:16px}
-.ask h4{margin:0 0 6px;font-size:16px;font-weight:600;letter-spacing:-.025em;color:var(--fg)}
-.ask p{margin:0 0 14px;font-size:12.5px;line-height:1.5;color:var(--fg-3)}
-.askrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-.askb{border:1px solid var(--hair-2);border-radius:11px;padding:11px 4px;font-size:12.5px;font-weight:600;letter-spacing:-.01em;color:var(--fg)}
-.askb:hover{border-color:var(--fg-3)}
-.askb.on{background:var(--fg);border-color:var(--fg);color:var(--bg)}
-.done{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ok);font-weight:500}
-.tl{display:flex;flex-direction:column}
-.tl-i{display:grid;grid-template-columns:14px 1fr;gap:13px;padding-bottom:18px;position:relative}
-.tl-i:last-child{padding-bottom:0}
-.tl-i::before{content:"";position:absolute;left:6.5px;top:14px;bottom:0;width:1px;background:var(--hair-2)}
-.tl-i:last-child::before{display:none}
-.tl-d{width:7px;height:7px;border-radius:50%;background:var(--hair-2);margin:5px 0 0 3.5px;z-index:1}
-.tl-d.hl{background:var(--ok)}
-.tl p{margin:0;font-size:14px;line-height:1.5;color:var(--fg)}
-.tl .met{margin-top:5px;display:block}
-.actb{flex-shrink:0;border-top:1px solid var(--hair);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.mini{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:12px;font-size:13.5px;font-weight:600;color:var(--fg-2);border:1px solid var(--hair-2)}
-.mini:hover{color:var(--fg);border-color:var(--fg-3)}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:44px;background:var(--hair);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+@media (max-width:820px){.steps{grid-template-columns:minmax(0,1fr)}}
+.step{background:var(--bg);padding:28px 26px 30px}
+.step .n{font-family:var(--f-u);font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--fg-3)}
+.step h3{margin:16px 0 9px;font-size:21px;font-weight:700;letter-spacing:-.032em;line-height:1.1}
+.step p{margin:0;font-size:14px;line-height:1.55;color:var(--fg-2)}
+.step .tick{margin-top:18px;display:flex;align-items:center;gap:8px;font-family:var(--f-u);font-size:11.5px;color:var(--sc)}
 
-/* create */
-.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 16px 20px}
-.cat{display:flex;align-items:center;gap:12px;background:var(--surf);border-radius:15px;padding:15px 14px;text-align:left}
-.cat:hover{background:var(--surf-2)}
-.cat .ci{color:var(--sc);flex-shrink:0}
-.cat b{font-size:14px;font-weight:600;letter-spacing:-.02em;color:var(--fg);display:block;line-height:1.25}
-.cat .met{display:block;margin-top:3px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
-.fld{padding:0 22px 20px}
-.flab{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-textarea{width:100%;font-family:var(--f);font-size:15px;line-height:1.5;color:var(--fg);background:var(--surf);border:1px solid transparent;border-radius:13px;padding:14px;resize:none}
-textarea:focus{outline:none;border-color:var(--hair-2)}
-textarea::placeholder{color:var(--fg-3)}
-.lrow{display:flex;align-items:center;gap:13px;background:var(--surf);border-radius:13px;padding:14px}
-.lrow .li{color:var(--sc,var(--fg-2));flex-shrink:0}
-.lrow .lt{flex:1;min-width:0}
-.lrow .lt b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}
-.lrow .lt .met{display:block;margin-top:3px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
-.lrow .lc{font-size:13px;font-weight:600;color:var(--fg);flex-shrink:0}
-.reach{background:var(--surf);border-radius:13px;padding:16px}
-.reach-t{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
-.reach-n{font-size:26px;font-weight:700;letter-spacing:-.04em;color:var(--fg);font-family:var(--f-u);font-feature-settings:"tnum" 1}
-.reach-n span{font-family:var(--f);font-size:13px;font-weight:500;letter-spacing:-.01em;color:var(--fg-2);margin-left:3px}
-.reach p{margin:0;font-size:12.5px;line-height:1.5;color:var(--fg-3)}
-.reach p b{color:var(--fg-2);font-weight:600}
-.adj{margin-top:14px;padding-top:14px;border-top:1px solid var(--hair-2)}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.pick{border:1px solid var(--hair-2);border-radius:9px;padding:8px 12px;font-family:var(--f-u);font-size:11.5px;font-weight:500;color:var(--fg-2)}
-.pick.on{background:var(--fg);border-color:var(--fg);color:var(--bg);font-weight:600}
-.sendb{flex-shrink:0;border-top:1px solid var(--hair);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}
-.sendn{text-align:center;margin-top:11px;display:block}
+/* trust */
+.states{display:flex;flex-direction:column;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.state{background:var(--surf);padding:15px 17px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:7px;white-space:nowrap;flex-shrink:0}
+.t-un{border:1px dashed var(--hair-2);color:var(--fg-3)}
+.t-mu{background:var(--info-d);color:#8CC0E6}
+.t-co{background:var(--ok-d);color:#7DD6AA}
+.t-sr{background:var(--fg);color:var(--bg)}
+.t-re{background:var(--surf-2);color:var(--fg-3)}
+.state p{margin:0;font-size:13.5px;line-height:1.5;color:var(--fg-2);min-width:0;flex:1}
+.rule{margin-top:26px;border-radius:14px;background:var(--crit-d);border:1px solid rgba(255,95,82,.2);padding:20px 22px}
+.rule h3{margin:0 0 8px;font-size:19px;font-weight:700;letter-spacing:-.03em;color:#FF8578}
+.rule p{margin:0;font-size:14.5px;line-height:1.55;color:#E8B4AD;max-width:52ch}
 
-.sent{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
-.tick{width:50px;height:50px;border-radius:50%;background:var(--ok-d);color:var(--ok);display:grid;place-items:center;margin-bottom:20px}
-.nxt{border-radius:14px;background:var(--surf);padding:16px;margin:20px 0 24px}
-.nxt ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
-.nxt li{display:grid;grid-template-columns:14px 1fr;gap:11px;font-size:13px;line-height:1.5;color:var(--fg-2)}
-.nxt li svg{margin-top:2px;color:var(--fg-3)}
-.nxt li b{color:var(--fg);font-weight:600}
-
-/* map */
-.mw{flex:1;min-height:0;position:relative}
-.msvg{position:absolute;inset:0;width:100%;height:100%}
-.mtop{position:absolute;top:0;left:0;right:0;padding:6px 16px;display:flex;gap:7px;z-index:5;overflow:hidden}
-.mf{background:rgba(24,24,27,.88);backdrop-filter:blur(10px);border:1px solid var(--hair-2);color:var(--fg-2);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.mf.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.pin{position:absolute;transform:translate(-50%,-100%);z-index:4}
-.pin button{display:flex;align-items:center;gap:6px;background:var(--pc);color:#0A0A0B;border-radius:999px;padding:6px 11px 6px 9px;font-size:11.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 8px 20px -6px rgba(0,0,0,.8)}
-.pin::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--pc);margin-top:-1px}
-.pin.faint button{background:transparent;color:var(--pc);border:1.5px dashed var(--pc)}
-.pin.faint::after{border-top-color:transparent}
-.me{position:absolute;transform:translate(-50%,-50%);z-index:3}
-.me i{display:block;width:15px;height:15px;border-radius:50%;background:#4FA8F7;border:3px solid var(--bg);box-shadow:0 0 0 8px rgba(79,168,247,.16)}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surf);border-radius:22px 22px 0 0;z-index:6;max-height:52%;display:flex;flex-direction:column;box-shadow:0 -14px 40px -14px rgba(0,0,0,.7)}
-.grab{width:36px;height:4px;border-radius:3px;background:var(--hair-2);margin:10px auto 2px;flex-shrink:0}
-
-/* rows */
-.rows{border-top:1px solid var(--hair)}
-.row{display:flex;align-items:center;gap:14px;padding:15px 22px;border-bottom:1px solid var(--hair);width:100%;text-align:left}
-.row .ri{color:var(--fg-3);flex-shrink:0}
-.rt{flex:1;min-width:0}
-.rt b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.02em;color:var(--fg);line-height:1.3}
-.rt .s{display:block;font-size:12.5px;color:var(--fg-2);margin-top:3px;line-height:1.4}
-.rt .met{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase}
-.sw{width:44px;height:26px;border-radius:13px;background:var(--hair-2);position:relative;flex-shrink:0;transition:background .16s}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#78797E;transition:transform .16s,background .16s}
-.sw.on{background:var(--fg)}
-.sw.on::after{transform:translateX(18px);background:var(--bg)}
-.lockp{font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ok);background:var(--ok-d);border-radius:5px;padding:5px 8px;flex-shrink:0}
-.expl{padding:14px 22px 0;font-size:12.5px;line-height:1.55;color:var(--fg-3);margin:0}
-.sech{padding:24px 22px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.tierh{padding:26px 22px 12px;display:flex;align-items:center;gap:9px}
-.tierh h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.025em;color:var(--fg)}
-.tierh .tp{font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;padding:4px 8px;border-radius:5px}
-
-/* empty */
-.empty{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 30px 40px;text-align:center}
-.watch{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--hair-2);border-radius:999px;padding:7px 14px 7px 9px;margin-bottom:22px}
-.faces{display:flex}
-.faces i{width:20px;height:20px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px;display:block}
-.faces i:first-child{margin-left:0}
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:40px}
+@media (max-width:820px){.tiers{grid-template-columns:minmax(0,1fr)}}
+.tier{border:1px solid var(--hair);border-radius:16px;padding:22px 20px;background:var(--surf)}
+.tier .tp{display:inline-block;font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;padding:5px 9px;border-radius:6px}
+.tier h3{margin:14px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.03em}
+.tier p{margin:0 0 14px;font-size:13.5px;line-height:1.5;color:var(--fg-2)}
+.tier ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.tier li{font-family:var(--f-u);font-size:12.5px;color:var(--fg-3);display:flex;gap:8px;align-items:baseline}
+.tier li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--fg-3);flex-shrink:0;transform:translateY(-2px)}
 
 /* lock */
-.lock{flex:1;display:flex;flex-direction:column;padding:0 13px calc(22px + env(safe-area-inset-bottom,0px));position:relative;overflow:hidden;
-  background:linear-gradient(168deg,#1A1B1E 0%,#0A0A0B 52%,#141518 100%)}
-.lock::before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;top:-110px;right:-110px;
-  background:radial-gradient(circle,rgba(255,95,82,.1),transparent 70%)}
-.ltime{text-align:center;padding:28px 0 26px;position:relative}
-.ltime .d{font-family:var(--f-u);font-size:13.5px;color:rgba(250,250,250,.6)}
-.ltime .t{font-size:70px;font-weight:500;color:#fff;line-height:1;letter-spacing:-.05em;margin-top:2px;font-family:var(--f-u);font-feature-settings:"tnum" 1}
-.nf{background:rgba(32,32,36,.82);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07);border-radius:17px;padding:13px 14px;margin-bottom:8px;position:relative}
-.nf.two{opacity:.45;transform:scale(.97)}
-.nf-t{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.nf-i{width:19px;height:19px;border-radius:5px;background:var(--fg);color:var(--bg);display:grid;place-items:center;flex-shrink:0}
-.nf-a{font-family:var(--f-u);font-size:11.5px;font-weight:500;color:var(--fg-2);flex:1}
-.nf h4{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-.025em;color:var(--fg);line-height:1.22}
-.nf p{margin:0;font-size:13.5px;line-height:1.4;color:var(--fg-2)}
-.nf .tr{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.07);color:var(--ok)}
-.lfoot{margin-top:auto;display:flex;justify-content:space-between;padding:0 18px}
-.lfoot i{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;color:#fff}
+.lockwrap{display:grid;grid-template-columns:300px minmax(0,1fr);gap:56px;align-items:center}
+@media (max-width:860px){.lockwrap{grid-template-columns:minmax(0,1fr);gap:40px}}
+.lock{border-radius:32px;padding:26px 14px 22px;background:linear-gradient(168deg,#1A1B1E,#0A0A0B 55%,#141518);box-shadow:0 34px 76px -28px rgba(0,0,0,.9),0 0 0 8px #141415,0 0 0 9px #33373A;position:relative;overflow:hidden}
+.lock::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;top:-90px;right:-90px;background:radial-gradient(circle,rgba(255,95,82,.12),transparent 70%)}
+.lock .t{position:relative;text-align:center;font-family:var(--f-u);font-size:52px;font-weight:300;letter-spacing:-.05em;line-height:1;font-feature-settings:"tnum" 1}
+.lock .dt{position:relative;text-align:center;font-family:var(--f-u);font-size:12px;color:var(--fg-2);margin-bottom:4px}
+.nf{position:relative;background:rgba(32,32,36,.85);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:12px 13px;margin-top:22px}
+.nf-t{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.nf-i{width:18px;height:18px;border-radius:5px;background:var(--fg);color:var(--bg);display:grid;place-items:center;flex-shrink:0}
+.nf-a{font-family:var(--f-u);font-size:10.5px;font-weight:500;color:var(--fg-2);flex:1}
+.nf-tm{font-family:var(--f-u);font-size:9.5px;color:var(--fg-3)}
+.nf h5{margin:0 0 4px;font-size:13.5px;font-weight:600;letter-spacing:-.025em;line-height:1.22}
+.nf p{margin:0;font-size:12.5px;line-height:1.4;color:var(--fg-2)}
+.nf .tr{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);font-family:var(--f-u);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ok)}
+.nf.two-nf{opacity:.42;transform:scale(.97);margin-top:7px}
 
-.toast{position:absolute;left:16px;right:16px;bottom:16px;background:var(--raise);border:1px solid var(--hair-2);color:var(--fg);border-radius:13px;padding:14px 16px;display:flex;align-items:center;gap:11px;font-size:13.5px;z-index:40;box-shadow:0 14px 34px -10px rgba(0,0,0,.8)}
-.hide{display:none!important}
+/* privacy */
+.priv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-top:40px}
+@media (max-width:700px){.priv{grid-template-columns:minmax(0,1fr)}}
+.pv{background:var(--bg);padding:26px 24px}
+.pv h3{margin:0 0 9px;font-size:18px;font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.pv p{margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)}
+
+/* close */
+.close{text-align:center;padding-block:96px}
+.close h2{margin:0 auto;max-width:16ch}
+.close .sec-p{margin-left:auto;margin-right:auto}
+.close .cta{justify-content:center}
+footer{border-top:1px solid var(--hair);padding-block:30px 40px}
+.ft{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:space-between}
+.ft p{margin:0;font-family:var(--f-u);font-size:12.5px;color:var(--fg-3)}
+.ft a{color:var(--fg-2);text-decoration:none;border-bottom:1px solid var(--hair-2);padding-bottom:1px}
+.ft a:hover{color:var(--fg);border-color:var(--fg-3)}
+.ft nav{position:static;background:none;backdrop-filter:none;border:0;display:flex;gap:18px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header class="head">
-    <div>
-      <p class="eyebrow">Interactive prototype · not a real service</p>
-      <h1>Community Alerts System</h1>
-      <p class="lede">See what is happening around you, report it, and confirm what other people report. Thirteen screens, all clickable. Pick one on the left, and the panel on the right explains what you are looking at and what you can try.</p>
+<nav>
+  <div class="m nav-in">
+    <a class="mark" href="#top"><span class="gl"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg></span>Community Alerts System</a>
+    <div class="nav-r">
+      <a class="nl hide-s" href="#how">How it works</a>
+      <a class="nl hide-s" href="#trust">Trust</a>
+      <a class="nl hide-s" href="#privacy">Privacy</a>
+      <a class="btn sm" href="/prototype">Open the prototype</a>
     </div>
-    <span class="tag">Nothing here is saved or sent</span>
-  </header>
-
-  <div class="bench">
-    <nav class="nav-col" aria-label="Screens">
-      <div class="nav-g"><p class="nav-h">Onboarding</p><div class="nav-l">
-        <button class="nav-b" data-go="ob1"><span class="n u">01</span>Value</button>
-        <button class="nav-b" data-go="ob2"><span class="n u">02</span>Where to watch</button>
-        <button class="nav-b" data-go="ob3"><span class="n u">03</span>Permission</button>
-      </div></div>
-      <div class="nav-g"><p class="nav-h">Core loop</p><div class="nav-l">
-        <button class="nav-b" data-go="home"><span class="n u">04</span>Home</button>
-        <button class="nav-b" data-go="detail"><span class="n u">05</span>Alert detail</button>
-        <button class="nav-b" data-go="map"><span class="n u">06</span>Map</button>
-      </div></div>
-      <div class="nav-g"><p class="nav-h">Reporting</p><div class="nav-l">
-        <button class="nav-b" data-go="cat"><span class="n u">07</span>What happened</button>
-        <button class="nav-b" data-go="review"><span class="n u">08</span>Review</button>
-        <button class="nav-b" data-go="sent"><span class="n u">09</span>Sent</button>
-      </div></div>
-      <div class="nav-g"><p class="nav-h">Control</p><div class="nav-l">
-        <button class="nav-b" data-go="places"><span class="n u">10</span>Places</button>
-        <button class="nav-b" data-go="notif"><span class="n u">11</span>Notifications</button>
-      </div></div>
-      <div class="nav-g"><p class="nav-h">Edges</p><div class="nav-l">
-        <button class="nav-b" data-go="lock"><span class="n u">12</span>Lock screen</button>
-        <button class="nav-b" data-go="empty"><span class="n u">13</span>Quiet area</button>
-      </div></div>
-    </nav>
-
-    <div class="dev">
-      <div class="phone" id="phone"></div>
-      <div class="pager"><button class="pg" id="prev">← Previous</button><button class="pg" id="next">Next →</button></div>
-      <p class="cap" id="cap"></p>
-    </div>
-
-    <div class="notes-col"><div class="notes">
-      <p class="n-eye" id="n-eye"></p>
-      <h2 class="n-h" id="n-title"></h2>
-      <p class="n-job" id="n-job"></p>
-      <div id="n-notes"></div>
-    </div></div>
   </div>
+</nav>
 
-  <footer class="credit">Built by <a href="https://x.com/__Smute" target="_blank" rel="noopener">Smute</a></footer>
-</div>
+<header class="hero" id="top">
+  <div class="m hero-grid">
+    <div>
+      <span class="ping"><i></i>4 active around Ikeja GRA</span>
+      <h1>Important things happening nearby. In time to matter.</h1>
+      <p class="sub">A blocked road. A power cut. Something at the estate gate. The people it actually affects usually find out last. This tells them first.</p>
+      <div class="cta">
+        <a class="btn" href="/prototype">Open the prototype
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></a>
+        <a class="btn gh" href="https://github.com/SMUTEE/community-alerts-system" target="_blank" rel="noopener">Read the code</a>
+      </div>
+      <p class="hero-note">Thirteen screens, clickable, nothing to install.</p>
+    </div>
 
-<script>
-const I={
- road:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 2.6 20h18.8L12 3.4Z"/><path d="M12 10.2v3.6"/><circle cx="12" cy="16.8" r=".7" fill="currentColor"/></svg>',
- power:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 14h6.8l-1 7.5L19 10h-6.8l.8-7.5Z"/></svg>',
- water:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2s5.8 6.3 5.8 10.2A5.8 5.8 0 0 1 6.2 13.4C6.2 9.5 12 3.2 12 3.2Z"/><path d="m4.4 19.8 15.2-15.4"/></svg>',
- fire:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.6c3.9 0 6.8-2.7 6.8-6.6 0-4.5-4.4-6.6-3.6-11.9C12.5 4.7 9.2 7.4 9.2 10.9c0 1.6-1 2.2-1.6 1.4-.8-1-1-2.3-1-2.3-.9 1.3-1.4 3.1-1.4 5 0 3.9 2.9 6.6 6.8 6.6Z"/></svg>',
- flood:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.4 14.2c2.1 0 2.1 1.9 4.2 1.9s2.1-1.9 4.2-1.9 2.1 1.9 4.2 1.9 2.1-1.9 4.2-1.9"/><path d="M2.4 19c2.1 0 2.1 1.9 4.2 1.9S8.7 19 10.8 19s2.1 1.9 4.2 1.9S17.1 19 19.2 19"/><path d="M6.2 10.4V5.6m5.8 4.8V3.2m5.8 7.2V6.4"/></svg>',
- security:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6 4.4 5.8v5.9c0 4.5 3.2 8.4 7.6 9.4 4.4-1 7.6-4.9 7.6-9.4V5.8L12 2.6Z"/><path d="M12 8.8v3.5"/><circle cx="12" cy="15.6" r=".7" fill="currentColor"/></svg>',
- missing:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20.8c.6-3.9 3.6-6.2 7.2-6.2s6.6 2.3 7.2 6.2"/></svg>',
- notice:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.2v3.6a1.6 1.6 0 0 0 1.6 1.6h1.8L14.8 20V4l-7.4 4.6H5.6A1.6 1.6 0 0 0 4 10.2Z"/><path d="M18.2 9.4a3.8 3.8 0 0 1 0 5.2"/></svg>',
- pin:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>',
- bell:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 8.8a5.8 5.8 0 1 0-11.6 0c0 5.8-2.3 7.2-2.3 7.2h16.2s-2.3-1.4-2.3-7.2Z"/><path d="M13.6 19.4a1.9 1.9 0 0 1-3.2 0"/></svg>',
- back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m14.8 5-7 7 7 7"/></svg>',
- close:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6.2 6.2 11.6 11.6M17.8 6.2 6.2 17.8"/></svg>',
- chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9.4 5 7 7-7 7"/></svg>',
- check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>',
- checkL:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>',
- people:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.1"/><path d="M3 20c.5-3.3 2.9-5.2 6-5.2S14.5 16.7 15 20"/><path d="M16.4 5.3a3.1 3.1 0 0 1 0 5.7M17.8 14.9c2 .7 3.2 2.5 3.5 5.1"/></svg>',
- warn:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 2.8 20h18.4L12 3.6Z"/><path d="M12 10v3.4"/><circle cx="12" cy="16.6" r=".7" fill="currentColor"/></svg>',
- clock:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.3 2"/></svg>',
- info:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r=".8" fill="currentColor"/></svg>',
- arrow:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.4V4.6M12 4.6 6.6 10M12 4.6 17.4 10"/></svg>',
- share:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.4V3.6M12 3.6 7.9 7.7M12 3.6l4.1 4.1"/><path d="M5.2 13.6v5.2a1.6 1.6 0 0 0 1.6 1.6h10.4a1.6 1.6 0 0 0 1.6-1.6v-5.2"/></svg>',
- flag:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 21V4.2M5.4 4.2h10.4l-1.5 3.4 1.5 3.4H5.4"/></svg>',
- home:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.4 12 3.8l8.2 6.6v9a1 1 0 0 1-1 1H4.8a1 1 0 0 1-1-1v-9Z"/></svg>',
- mapi:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4.4 6 2.5 5-2.1v12.8l-5 2.1-6-2.5-5 2.1V6.5l5-2.1Z"/><path d="M9 4.4v12.8M15 6.9v12.8"/></svg>',
- star:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>',
- you:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20.8c.6-3.9 3.6-6.2 7.2-6.2s6.6 2.3 7.2 6.2"/></svg>',
- plus:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>',
- torch:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 2.4h7.6L14.5 7h-5L8.2 2.4Z"/><path d="M9.5 7h5v3.5L13 11.9v9.7h-2v-9.7L9.5 10.5V7Z"/></svg>',
- cam:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.8h3.3L8 6.2h8l1.5 2.6h3.3v10H3.2v-10Z"/><circle cx="12" cy="13.4" r="3.1"/></svg>',
- leaf:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.2 12.3 2.8 2.8 5-6"/></svg>'
-};
-const SC={critical:'var(--crit)',important:'var(--imp)',info:'var(--info)',resolved:'var(--ok)'};
-const SD={critical:'var(--crit-d)',important:'var(--imp-d)',info:'var(--info-d)',resolved:'var(--ok-d)'};
+    <div class="ph" aria-label="The home screen of the app">
+      <div class="ph-sb"><span>20:41</span><span class="r">
+        <svg width="14" height="10" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.4 6.4 0 0 1 8.8 0"/><circle cx="8" cy="9.8" r=".9" fill="currentColor" stroke="none"/></svg>
+        <svg width="18" height="9" viewBox="0 0 22 11" fill="none" stroke="currentColor" stroke-width="1.2"><rect x=".6" y=".6" width="19" height="9.8" rx="2.6"/><rect x="2.4" y="2.4" width="13" height="6.2" rx="1.4" fill="currentColor" stroke="none"/></svg>
+      </span></div>
+      <div class="ph-hd"><div><h4>Around you</h4><div class="s"><i></i>Ikeja GRA · 4 active</div></div>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--fg-2)"><path d="M17.8 8.8a5.8 5.8 0 1 0-11.6 0c0 5.8-2.3 7.2-2.3 7.2h16.2s-2.3-1.4-2.3-7.2Z"/><path d="M13.6 19.4a1.9 1.9 0 0 1-3.2 0"/></svg>
+      </div>
+      <div class="ph-sg"><span class="on">Nearby</span><span>Following</span><span>Settled</span></div>
+      <div class="ph-hero">
+        <span class="k"><i></i>Closest to you · 8 min ago</span>
+        <h5>Road blocked<br>700 m away.</h5>
+        <p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>
+        <div class="ph-chips">
+          <span class="ph-chip g"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>14 confirmed</span>
+          <span class="ph-chip">Northbound</span>
+        </div>
+      </div>
+      <div class="ph-it" style="--sc:var(--crit);margin-top:10px">
+        <span class="ph-d">0.9<span>km · 4 min</span></span>
+        <span><span class="ph-c"><i></i>Security</span>
+          <p class="ph-t">Two men on a motorbike trailing cars at the estate gate</p>
+          <span class="ph-m"><span class="un">Unverified · 1 report</span></span>
+          <span class="ph-held">Held from notifications until someone else confirms it.</span>
+        </span>
+      </div>
+      <div class="ph-it" style="--sc:var(--info)">
+        <span class="ph-d">1.1<span>km · 32 min</span></span>
+        <span><span class="ph-c"><i></i>Power outage</span>
+          <p class="ph-t">Power out across the estate since 7:10 PM</p>
+          <span class="ph-m">47 independent reports</span>
+        </span>
+      </div>
+      <div class="ph-tb">
+        <span class="on"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.4 12 3.8l8.2 6.6v9a1 1 0 0 1-1 1H4.8a1 1 0 0 1-1-1v-9Z"/></svg></span>
+        <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4.4 6 2.5 5-2.1v12.8l-5 2.1-6-2.5-5 2.1V6.5l5-2.1Z"/></svg></span>
+        <span class="fab"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg></span>
+        <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg></span>
+        <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20.8c.6-3.9 3.6-6.2 7.2-6.2s6.6 2.3 7.2 6.2"/></svg></span>
+      </div>
+    </div>
+  </div>
+  <div style="height:84px"></div>
+</header>
 
-const alerts=[
- {id:'sec',icon:'security',cat:'Security',sev:'critical',
-  t:'Two men on a motorbike trailing cars at the estate gate',
-  short:'Motorbike trailing cars at the gate',
-  d:'They have circled the gate three times in the last ten minutes. Security has been told but has not come out yet.',
-  place:'Ikeja GRA · Oduduwa Way',dist:'0.9',ago:'4 min',trust:'un',n:1,held:true,canConfirm:true,
-  tl:[['4 min ago','Reported by a Community Member watching Ikeja GRA.',0]]},
- {id:'road',icon:'road',cat:'Road blocked',sev:'important',
-  t:'Tree down across the road at the junction',
-  short:'Tree down at the junction',
-  d:'A large tree has fallen across both lanes near the junction. Cars are turning back toward Allen Avenue. No injuries seen.',
-  place:'Ikeja GRA · Isaac John St',dist:'0.7',ago:'8 min',trust:'ok',n:14,seg:'Northbound, toward Allen',canConfirm:true,
-  tl:[['8 min ago','Tree has fallen across the road near the junction.',0],
-      ['6 min ago','14 people nearby confirmed this is happening.',1],
-      ['2 min ago','Added: cars are turning back toward Allen Avenue.',0]]},
- {id:'power',icon:'power',cat:'Power outage',sev:'info',
-  t:'Power out across the estate since 7:10 PM',
-  short:'Power out since 7:10 PM',
-  d:'No light on Isaac John, Oduduwa or Sowemimo. A utility van was seen at the substation around 7:40.',
-  place:'Ikeja GRA',dist:'1.1',ago:'32 min',trust:'multi',n:47,
-  tl:[['32 min ago','Power has been out in the area since 7:10 PM.',0],
-      ['26 min ago','46 more people reported the same thing. Merged into one alert.',1],
-      ['12 min ago','A utility van was seen at the substation.',0]]},
- {id:'flood',icon:'flood',cat:'Flooding',sev:'important',
-  t:'Water rising around the underpass',
-  short:'Water rising at the underpass',
-  d:'Water is up to the kerb on the Mobolaji Bank Anthony side. Passable slowly in a high vehicle, not in a saloon car.',
-  place:'Ikeja · Mobolaji Bank Anthony Way',dist:'2.3',ago:'1 hr',trust:'ok',n:9,aged:true,canConfirm:true,
-  tl:[['1 hr ago','Water is accumulating around the underpass.',0],
-      ['52 min ago','9 people nearby confirmed this is happening.',1]]},
- {id:'notice',icon:'notice',cat:'Community notice',sev:'info',
-  t:'Estate gate closing 11 PM tonight for repairs',
-  short:'Gate closing 11 PM for repairs',
-  d:'The main gate will be shut from 11 PM until about 5 AM while the barrier motor is replaced. Use the Sowemimo gate.',
-  place:'Ikeja GRA',dist:'0.4',ago:'3 hr',trust:'src',n:0,srcName:'Ikeja GRA Residents’ Association',
-  tl:[['3 hr ago','Posted by the Ikeja GRA Residents’ Association, a verified organisation.',1]]}
-];
-const CATS=[
- {k:'road',n:'Road blocked',s:'Transport',sev:'important',r:'1.2 km along the road',p:240},
- {k:'security',n:'Security',s:'Safety',sev:'critical',r:'800 m around the spot',p:180},
- {k:'fire',n:'Fire',s:'Safety',sev:'critical',r:'1.5 km around the spot',p:420},
- {k:'flood',n:'Flooding',s:'Safety',sev:'important',r:'1 km around the spot',p:310},
- {k:'power',n:'Power outage',s:'Utilities',sev:'info',r:'2 km around the spot',p:1240},
- {k:'water',n:'Water outage',s:'Utilities',sev:'info',r:'2 km around the spot',p:1100},
- {k:'missing',n:'Missing person',s:'Safety',sev:'important',r:'3 km around the spot',p:1800},
- {k:'notice',n:'Community notice',s:'Community',sev:'info',r:'Followers of this place',p:1800}
-];
-const S={screen:'home',open:'road',cat:'road',ans:{},cnt:{}};
-alerts.forEach(a=>S.cnt[a.id]=a.n);
+<section id="problem"><div class="m pad two">
+  <div>
+    <span class="lab">The problem</span>
+    <h2>Someone 500 metres away already knows.</h2>
+    <p class="sec-p">The information exists. It is sitting in a WhatsApp group you are not in, or with a neighbour you have not spoken to today. By the time it reaches you, the window where it would have changed your evening has closed.</p>
+    <div class="chans">
+      <span class="chan">The estate WhatsApp group</span>
+      <span class="chan">A Telegram channel</span>
+      <span class="chan">X</span>
+      <span class="chan">A Facebook group</span>
+      <span class="chan">The security guard</span>
+      <span class="chan">Word of mouth</span>
+      <span class="chan">Local radio</span>
+    </div>
+  </div>
+  <div class="fails">
+    <div class="fail"><h3>It is scattered</h3><p>Seven places to check, and the one that has it is the one you are not in.</p></div>
+    <div class="fail"><h3>It arrives late</h3><p>A message forwarded through three groups reaches you after you have already driven into the traffic.</p></div>
+    <div class="fail"><h3>It does not know where you are</h3><p>No group chat can answer the only question that matters: is this relevant to me, right now?</p></div>
+  </div>
+</div></section>
 
-function sbar(){return '<div class="sbar"><span>20:41</span><span class="sb-r">'+
- '<span class="sb-b"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:9.5px"></i></span>'+
- '<svg width="15" height="11" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.4 6.4 0 0 1 8.8 0"/><circle cx="8" cy="9.8" r=".9" fill="currentColor" stroke="none"/></svg>'+
- '<span class="batt"></span></span></div>';}
-function tabs(a){const t=(k,i,l)=>'<button class="tab" data-tab="'+k+'" aria-current="'+(a===k)+'">'+i+'<span>'+l+'</span></button>';
- return '<nav class="tabs">'+t('home',I.home,'Home')+t('map',I.mapi,'Map')+
- '<button class="tab" data-tab="cat" aria-label="Report"><span class="fab">'+I.plus+'</span></button>'+
- t('places',I.star,'Places')+t('you',I.you,'You')+'</nav>';}
-function trust(a){const n=S.cnt[a.id];
- if(a.trust==='ok')return '<span class="v">'+I.check+n+' confirmed</span>';
- if(a.trust==='multi')return '<span>'+n+' independent reports</span>';
- if(a.trust==='src')return '<span class="v">'+I.check+a.srcName+'</span>';
- return '<span class="un">Unverified · 1 report</span>';}
-function item(a){
- return '<button class="item" data-open="'+a.id+'" style="--sc:'+SC[a.sev]+'">'+
-  '<span class="dist">'+a.dist+'<span>km · '+a.ago+'</span></span>'+
-  '<span class="ibody"><span class="icat"><i></i>'+a.cat+'</span>'+
-  '<span class="it">'+a.t+'</span><span class="im">'+trust(a)+'</span>'+
-  (a.held?'<span class="held">'+I.warn+'<span>Held from notifications until someone else confirms it.</span></span>':'')+
-  '</span></button>';}
+<section id="how"><div class="m pad">
+  <span class="lab">How it works</span>
+  <h2>Report it, confirm it, reach the people it affects.</h2>
+  <div class="steps">
+    <div class="step" style="--sc:var(--imp)">
+      <span class="n">01</span>
+      <h3>Someone reports it</h3>
+      <p>Two taps. Pick a category, check the location the app already filled in, send. A description is optional, because the category and the place carry most of the value.</p>
+      <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.3 2"/></svg>Under fifteen seconds</div>
+    </div>
+    <div class="step" style="--sc:var(--ok)">
+      <span class="n">02</span>
+      <h3>The people nearby confirm it</h3>
+      <p>Anyone inside the alert area is asked a direct question: can you see this? Structured answers, not a comment thread. Confidence rises, or the report quietly dies.</p>
+      <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>No arguing, no replies</div>
+    </div>
+    <div class="step" style="--sc:var(--info)">
+      <span class="n">03</span>
+      <h3>Only the right people are told</h3>
+      <p>Distance, direction, category and confidence together decide who gets a notification. Someone driving toward a blocked road needs to know. Someone at home behind it does not.</p>
+      <div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>Relevance, not radius</div>
+    </div>
+  </div>
+</div></section>
 
-const B={
-home(){
- const rest=[alerts[0],alerts[2],alerts[3],alerts[4]];
- return sbar()+
- '<div class="hdr"><div><h2 class="h-xl">Around you</h2>'+
-  '<p class="sub met"><i class="live"></i>Ikeja GRA · 4 active</p></div>'+
-  '<button class="circ" data-go="notif" aria-label="Notifications">'+I.bell+'<span class="pip"></span></button></div>'+
- '<div class="segs"><span class="seg" aria-selected="true">Nearby</span><span class="seg">Following</span><span class="seg">Settled</span></div>'+
- '<div class="roll">'+
-  '<button class="hero" data-open="road" style="--hd:#231A12;--hc:var(--imp)">'+
-   '<span class="kick lab"><i></i>Closest to you · 8 min ago</span>'+
-   '<h3>Road blocked<br>700 m away.</h3>'+
-   '<p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>'+
-   '<span class="row"><span class="chip good">'+I.check+'14 confirmed</span><span class="chip">'+I.arrow+'Northbound</span></span>'+
-  '</button>'+
-  '<div class="strm">'+rest.map(item).join('')+'</div>'+
- '</div>'+tabs('home');
-},
+<section id="trust"><div class="m pad two">
+  <div>
+    <span class="lab">Trust</span>
+    <h2>The hard part is knowing what to believe.</h2>
+    <p class="sec-p">A local alert app is worthless the moment people cannot tell a real incident from something somebody made up. So every alert carries its confidence on its face, everywhere it appears: in the feed, on the map, and inside the notification.</p>
+    <div class="rule">
+      <h3>One person cannot ring 180 phones.</h3>
+      <p>An unconfirmed report is visible in the feed and nowhere else. It becomes a notification only once someone else nearby independently confirms it. False alarms cost the sender reach, not the neighbourhood its sleep.</p>
+    </div>
+  </div>
+  <div class="states">
+    <div class="state"><span class="tchip t-un">Unverified · 1 report</span><p>One person said so. Feed only.</p></div>
+    <div class="state"><span class="tchip t-mu">47 independent reports</span><p>Separate people reported the same thing, and it was merged into one alert.</p></div>
+    <div class="state"><span class="tchip t-co">14 confirmed</span><p>People inside the area were asked and said they could see it.</p></div>
+    <div class="state"><span class="tchip t-sr">Residents' Association</span><p>Posted by a verified organisation.</p></div>
+    <div class="state"><span class="tchip t-re">Resolved</span><p>Over. Kept for a day, then archived.</p></div>
+  </div>
+</div></section>
 
-detail(){
- const a=alerts.find(x=>x.id===S.open)||alerts[1];
- const ans=S.ans[a.id];let ask='';
- if(a.canConfirm){
-  if(ans) ask='<div class="ask"><div class="done">'+I.checkL+'<span>Counted. This alert is stronger now.</span></div></div>';
-  else if(a.aged) ask='<div class="ask"><h4>Is this still happening?</h4>'+
-   '<p>Reported an hour ago. Nobody has updated it since.</p><div class="askrow">'+
-   '<button class="askb" data-ans="'+a.id+'|yes">Still on</button>'+
-   '<button class="askb" data-ans="'+a.id+'|over">It’s over</button>'+
-   '<button class="askb" data-ans="'+a.id+'|idk">Not sure</button></div></div>';
-  else ask='<div class="ask"><h4>Are you nearby? Did this happen?</h4>'+
-   '<p>Answers from people inside the alert area are what move it from reported to confirmed.</p><div class="askrow">'+
-   '<button class="askb" data-ans="'+a.id+'|yes">I see it</button>'+
-   '<button class="askb" data-ans="'+a.id+'|no">Not accurate</button>'+
-   '<button class="askb" data-ans="'+a.id+'|idk">Not sure</button></div></div>';
- }
- return sbar()+
- '<div class="hdr" style="padding-bottom:6px"><button class="circ" data-tab="home" aria-label="Back">'+I.back+'</button>'+
-  '<span style="flex:1"></span><button class="circ" aria-label="Share">'+I.share+'</button>'+
-  '<button class="circ" aria-label="Report this">'+I.flag+'</button></div>'+
- '<div class="roll"><div class="d-hero" style="--sc:'+SC[a.sev]+'">'+
-  '<div class="d-kick"><span class="d-cat"><i></i>'+a.cat+'</span></div>'+
-  '<h2 class="h-l">'+a.t+'</h2>'+
-  '<div class="d-meta met">'+a.place+' · '+a.dist+' km away · '+a.ago+'</div>'+
-  (a.seg?'<div style="margin-top:12px"><span class="chip">'+I.arrow+a.seg+'</span></div>':'')+
-  '<p class="bd" style="margin-top:16px;color:var(--fg)">'+a.d+'</p>'+
-  '<div class="im" style="margin-top:14px">'+trust(a)+'</div>'+
-  (a.held?'<div class="held" style="margin-top:14px">'+I.warn+'<span><b>Nobody has confirmed this yet.</b> It has not been sent to anyone as a notification. If you are nearby and can see it, say so below.</span></div>':'')+
- '</div>'+
- (ask?'<div class="blk">'+ask+'</div>':'')+
- '<div class="blk"><p class="blk-h lab">What we know</p><div class="tl">'+
-  a.tl.map(t=>'<div class="tl-i"><span class="tl-d'+(t[2]?' hl':'')+'"></span><div><p>'+t[1]+'</p><span class="met">'+t[0]+'</span></div></div>').join('')+
- '</div></div>'+
- '<div class="blk"><p class="blk-h lab">Where</p>'+
-  '<div style="height:120px;border-radius:14px;overflow:hidden;position:relative;background:#0E0E10">'+mini(SC[a.sev])+'</div>'+
-  '<p class="met" style="margin:12px 0 0;line-height:1.55;font-size:12px">Pinned to the junction, not to the reporter. Nobody can see where the person who filed this was standing.</p>'+
- '</div><div style="height:10px"></div></div>'+
- '<div class="actb"><button class="mini" data-tab="map">'+I.pin+'See on map</button><button class="mini">'+I.share+'Share</button></div>';
-},
+<section id="notifications"><div class="m pad lockwrap">
+  <div class="lock" aria-label="An alert arriving on a lock screen">
+    <div class="dt">Monday 29 September</div>
+    <div class="t">20:41</div>
+    <div class="nf">
+      <div class="nf-t"><span class="nf-i"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg></span><span class="nf-a">Community Alerts System</span><span class="nf-tm">now</span></div>
+      <h5>Road blocked 700 m from you</h5>
+      <p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>
+      <div class="tr"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>14 people nearby confirmed</div>
+    </div>
+    <div class="nf two-nf">
+      <div class="nf-t"><span class="nf-i"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg></span><span class="nf-a">Community Alerts System</span><span class="nf-tm">32m ago</span></div>
+      <h5>Power out around Home</h5>
+      <p>47 reports across Ikeja GRA since 7:10 PM.</p>
+    </div>
+  </div>
+  <div>
+    <span class="lab">Notifications</span>
+    <h2>If everything is urgent, nothing is.</h2>
+    <p class="sec-p">Notification fatigue is the thing most likely to kill an app like this. So there is a floor and a ceiling. You control almost everything, but not quite everything.</p>
+    <div class="tiers">
+      <div class="tier"><span class="tp" style="background:var(--crit-d);color:var(--crit)">Interrupts you</span>
+        <h3>Critical</h3><p>Cannot be switched off. Capped at four a day, however many are reported.</p>
+        <ul><li>Confirmed fire</li><li>Security, once corroborated</li><li>Severe flooding</li></ul></div>
+      <div class="tier"><span class="tp" style="background:var(--imp-d);color:var(--imp)">Notifies, batched</span>
+        <h3>Important</h3><p>Grouped, at most one an hour. Forty-seven outage reports make one notification.</p>
+        <ul><li>Roads blocked or closed</li><li>Power and water</li><li>Missing person or pet</li></ul></div>
+      <div class="tier"><span class="tp" style="background:var(--info-d);color:var(--info)">No notification</span>
+        <h3>For the feed</h3><p>There when you look, silent when you do not.</p>
+        <ul><li>Community notices</li><li>Events and closures</li><li>Lost and found</li></ul></div>
+    </div>
+  </div>
+</div></section>
 
-cat(){
- return sbar()+
- '<div class="hdr"><button class="circ" data-tab="home" aria-label="Cancel">'+I.close+'</button>'+
-  '<div style="flex:1"><h2 class="h-l">What’s happening?</h2></div></div>'+
- '<div class="roll">'+
-  '<p class="bd" style="padding:0 22px 20px">Pick the closest one. You can add detail next, or just send it.</p>'+
-  '<div class="cats">'+CATS.map(c=>'<button class="cat" data-cat="'+c.k+'" style="--sc:'+SC[c.sev]+'">'+
-   '<span class="ci">'+I[c.k]+'</span><span><b>'+c.n+'</b><span class="met">'+c.s+'</span></span></button>').join('')+'</div>'+
-  '<div style="padding:0 22px 24px"><button class="btn sec">Something else</button></div>'+
- '</div>';
-},
+<section id="privacy"><div class="m pad">
+  <span class="lab">Privacy</span>
+  <h2>Location is the most sensitive thing you own.</h2>
+  <p class="sec-p">An app that watches where you are has to be unusually specific about what it keeps. The rule is the minimum needed to decide what to show you, and nothing beyond it.</p>
+  <div class="priv">
+    <div class="pv"><h3>Approximate, never exact</h3><p>Your rough area, about 500 metres across. Enough to sort alerts by distance, not enough to place you on a street.</p></div>
+    <div class="pv"><h3>Pinned places stay private</h3><p>Save home, work, a parent's house. None of it is published, and nobody can tell that anyone has pinned a particular address.</p></div>
+    <div class="pv"><h3>Nobody sees where you are</h3><p>Other people see that an alert is near them. They never see a person on a map. Reports are pinned to the nearest junction, not to whoever sent them.</p></div>
+    <div class="pv"><h3>Off means off</h3><p>Turn location off and nothing is stored. Follow a place by name instead and the app still works.</p></div>
+  </div>
+</div></section>
 
-review(){
- const c=CATS.find(x=>x.k===S.cat)||CATS[0];
- return sbar()+
- '<div class="hdr"><button class="circ" data-go="cat" aria-label="Back">'+I.back+'</button>'+
-  '<div style="flex:1"><h2 class="h-l">Check and send</h2></div></div>'+
- '<div class="roll">'+
-  '<div class="fld"><div class="lrow" style="--sc:'+SC[c.sev]+'"><span class="li">'+I[c.k]+'</span>'+
-   '<span class="lt"><b>'+c.n+'</b><span class="met">'+c.s+'</span></span>'+
-   '<button class="lc" data-go="cat">Change</button></div></div>'+
-  '<div class="fld"><div class="flab"><span class="lab">Where</span></div>'+
-   '<div class="lrow"><span class="li">'+I.pin+'</span>'+
-   '<span class="lt"><b>Isaac John St, at the junction</b><span class="met">Snapped to the junction</span></span>'+
-   '<button class="lc">Move</button></div></div>'+
-  '<div class="fld"><div class="flab"><span class="lab">What should people know?</span><span class="met" id="cc">0 / 280</span></div>'+
-   '<textarea id="ta" rows="3" placeholder="Tree has fallen across the road near the junction."></textarea></div>'+
-  '<div class="fld"><div class="flab"><span class="lab">Who gets this</span></div>'+
-   '<div class="reach"><div class="reach-t"><span class="reach-n" id="rn">~'+c.p+'<span>people</span></span>'+
-   '<button class="lc" id="adjb">Adjust</button></div>'+
-   '<p id="rw">Set automatically for '+c.n.toLowerCase()+': <b>'+c.r+'</b>. People following Ikeja GRA get it too.</p>'+
-   '<div class="adj hide" id="adjbox"><div class="chips" id="chips">'+
-    '<button class="pick" data-r="0">500 m</button><button class="pick on" data-r="1">Suggested</button>'+
-    '<button class="pick" data-r="2">2 km</button><button class="pick" data-r="3">Whole area</button></div>'+
-   (S.cat==='road'?'<div style="margin-top:14px"><div class="flab" style="margin-bottom:9px"><span class="lab">Which direction?</span></div>'+
-    '<div class="chips" id="dir"><button class="pick on">Northbound</button><button class="pick">Southbound</button><button class="pick">Both</button></div></div>':'')+
-   '</div></div></div><div style="height:4px"></div></div>'+
- '<div class="sendb"><button class="btn" id="send">Send alert</button>'+
-  '<span class="sendn met" id="sn">Reaches about '+c.p+' people around Ikeja GRA</span></div>';
-},
+<section><div class="m close">
+  <span class="lab">Try it</span>
+  <h2>Thirteen screens. Nothing to install.</h2>
+  <p class="sec-p">Walk the whole thing: open an alert, confirm it, watch it change state, file a report, and see why a security report waits for a second witness before it wakes anybody up.</p>
+  <div class="cta">
+    <a class="btn" href="/prototype">Open the prototype
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></a>
+    <a class="btn gh" href="/directions">See the design studies</a>
+  </div>
+</div></section>
 
-sent(){
- const c=CATS.find(x=>x.k===S.cat)||CATS[0];const crit=c.sev==='critical';
- return sbar()+'<div class="sent"><span class="tick">'+I.checkL+'</span>'+
- '<h2 class="h-xl">Sent.</h2>'+
- '<p class="bd" style="margin-top:12px">Your '+c.n.toLowerCase()+' report is live around Ikeja GRA.</p>'+
- '<div class="nxt"><p class="lab" style="margin:0 0 14px">What happens now</p><ul>'+
-  (crit?'<li>'+I.warn+'<span>It is in the feed, but <b>no notification has gone out</b>. One more person nearby has to confirm it first.</span></li>'
-       :'<li>'+I.check+'<span>About <b>'+c.p+' people</b> nearby have it on their lock screen.</span></li>')+
-  '<li>'+I.people+'<span>People inside the area are being asked whether they can see it too.</span></li>'+
-  '<li>'+I.clock+'<span>We will check back in about an hour to ask if it is over.</span></li>'+
- '</ul></div><button class="btn sec" data-tab="home">Back to the feed</button></div>';
-},
-
-map(){
- const pins=[{x:47,y:33,c:'var(--imp)',l:'Tree down',id:'road'},
-  {x:74,y:19,c:'var(--crit)',l:'Security',id:'sec',f:1},
-  {x:24,y:48,c:'var(--info)',l:'Outage · 47',id:'power'},
-  {x:78,y:56,c:'var(--imp)',l:'Flooding',id:'flood'}];
- const a=alerts.find(x=>x.id===S.open&&x.id!=='notice')||alerts[1];
- return sbar()+'<div class="mw">'+big()+
-  '<div class="mtop"><span class="mf on">'+I.pin+'Ikeja GRA</span><span class="mf">Active only</span><span class="mf">6 hrs</span></div>'+
-  '<span class="me" style="left:40%;top:42%"><i></i></span>'+
-  pins.map(p=>'<span class="pin'+(p.f?' faint':'')+'" style="left:'+p.x+'%;top:'+p.y+'%;--pc:'+p.c+'"><button data-open="'+p.id+'">'+I.pin+p.l+'</button></span>').join('')+
-  '<div class="sheet"><span class="grab"></span><div class="roll"><div class="strm">'+item(a)+'</div></div></div>'+
- '</div>'+tabs('map');
-},
-
-places(){
- const r=(i,n,s,m)=>'<button class="row"><span class="ri">'+i+'</span><span class="rt"><b>'+n+'</b><span class="s">'+s+'</span><span class="met">'+m+'</span></span>'+I.chev+'</button>';
- return sbar()+
- '<div class="hdr"><div style="flex:1"><h2 class="h-xl">Places</h2></div>'+
-  '<button class="circ" aria-label="Add a place">'+I.plus+'</button></div>'+
- '<div class="roll">'+
-  '<div class="sech"><span class="lab">Right now</span></div>'+
-  '<div class="rows"><div class="row"><span class="ri">'+I.pin+'</span>'+
-   '<span class="rt"><b>Where I am</b><span class="s">Ikeja GRA · updated 4 min ago</span>'+
-   '<span class="met">Approximate · ~500 m accuracy</span></span><span class="sw on" data-sw></span></div></div>'+
-  '<p class="expl">We keep your rough area, not your street. It is never shown to anyone else, and it is not stored once you turn this off.</p>'+
-  '<div class="sech"><span class="lab">Pinned</span><span class="met">Private to you</span></div>'+
-  '<div class="rows">'+
-   r(I.home,'Home','Ikeja GRA · 1 km','Critical + important + notices')+
-   r(I.notice,'Work','Victoria Island · 800 m','Critical + important')+
-   r(I.missing,'Mum’s place','Ogba · 1.5 km','Critical + important')+
-  '</div>'+
-  '<p class="expl">Pinned places are never published. Other people cannot tell that anyone has pinned a given house or street.</p>'+
-  '<div class="sech"><span class="lab">Following</span></div>'+
-  '<div class="rows">'+
-   r(I.star,'Lekki Phase 1','1.8k watching','Feed only, no push')+
-   r(I.star,'UNILAG','4.2k watching','Critical + important')+
-  '</div>'+
-  '<div style="padding:22px"><button class="btn sec">Follow another place</button></div>'+
- '</div>'+tabs('places');
-},
-
-notif(){
- const row=(n,s,on,lock)=>'<button class="row" data-sw><span class="rt"><b>'+n+'</b><span class="s">'+s+'</span></span>'+
-  (lock?'<span class="lockp">Always on</span>':'<span class="sw'+(on?' on':'')+'"></span>')+'</button>';
- return sbar()+
- '<div class="hdr"><button class="circ" data-tab="home" aria-label="Back">'+I.back+'</button>'+
-  '<div style="flex:1"><h2 class="h-l">Notifications</h2></div></div>'+
- '<div class="roll">'+
-  '<p class="bd" style="padding:0 22px 4px">You decide what is allowed to interrupt you. We will never send more than <b style="color:var(--fg);font-weight:600">four critical alerts a day</b>, however many are reported.</p>'+
-  '<div class="tierh"><h3>Critical</h3><span class="tp" style="background:var(--crit-d);color:var(--crit)">Interrupts you</span></div>'+
-  '<div class="rows">'+row('Fire','Confirmed fire in your alert area',1,1)+
-   row('Security incident','Only once a second person nearby confirms it',1,1)+
-   row('Severe flooding','Water blocking a road you follow',1,1)+'</div>'+
-  '<p class="expl">These cannot be switched off. It is the promise the app makes. They are still capped, and an unconfirmed report never becomes one.</p>'+
-  '<div class="tierh"><h3>Important</h3><span class="tp" style="background:var(--imp-d);color:var(--imp)">Notifies, batched</span></div>'+
-  '<div class="rows">'+row('Road blocked or closed','When it affects a road you use',1)+
-   row('Power outage','Batched, at most one an hour',1)+
-   row('Water outage','Batched, at most one an hour',0)+
-   row('Missing person or pet','Within 3 km of a place you follow',1)+'</div>'+
-  '<div class="tierh"><h3>For the feed</h3><span class="tp" style="background:var(--info-d);color:var(--info)">No notification</span></div>'+
-  '<div class="rows">'+row('Community notices','From verified organisations',0)+
-   row('Events and closures','',0)+row('Lost and found','',0)+'</div>'+
-  '<div class="sech"><span class="lab">Quiet hours</span></div>'+
-  '<div class="rows">'+row('Silence 10 PM to 6 AM','Critical alerts still come through',1)+'</div>'+
-  '<div style="height:20px"></div>'+
- '</div>'+tabs('you');
-},
-
-lock(){
- return '<div class="lock">'+sbar()+
- '<div class="ltime"><div class="d">Monday 29 September</div><div class="t">20:41</div></div>'+
- '<div class="nf"><div class="nf-t"><span class="nf-i">'+I.pin+'</span><span class="nf-a">Community Alerts System</span><span class="met">now</span></div>'+
-  '<h4>Road blocked 700 m from you</h4>'+
-  '<p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>'+
-  '<div class="tr"><span class="met" style="color:var(--ok);display:flex;align-items:center;gap:6px">'+I.check+'14 people nearby confirmed</span></div></div>'+
- '<div class="nf two"><div class="nf-t"><span class="nf-i">'+I.pin+'</span><span class="nf-a">Community Alerts System</span><span class="met">32m ago</span></div>'+
-  '<h4>Power out around Home</h4><p>47 reports across Ikeja GRA since 7:10 PM.</p></div>'+
- '<div class="lfoot"><i>'+I.torch+'</i><i>'+I.cam+'</i></div></div>';
-},
-
-empty(){
- return sbar()+
- '<div class="hdr"><div><h2 class="h-xl">Around you</h2>'+
-  '<p class="sub met"><i class="live calm"></i>Ikeja GRA · all clear</p></div>'+
-  '<button class="circ" data-go="notif" aria-label="Notifications">'+I.bell+'</button></div>'+
- '<div class="segs"><span class="seg" aria-selected="true">Nearby</span><span class="seg">Following</span><span class="seg">Settled</span></div>'+
- '<div class="hero" style="--hd:#101A15;--hc:var(--ok);margin-bottom:0">'+
-  '<span class="kick lab"><i></i>Quiet · last alert 6 hrs ago</span>'+
-  '<h3>Nothing active<br>around you.</h3>'+
-  '<p>47 people are watching Ikeja GRA tonight. You will know before the group chat does.</p></div>'+
- '<div class="empty">'+
-  '<span class="watch"><span class="faces"><i style="background:#6E8B90"></i><i style="background:#9A8A6C"></i><i style="background:#7A8C78"></i><i style="background:#8C7A7A"></i></span>'+
-  '<span class="met">47 people watching this area</span></span>'+
-  '<p class="bd" style="max-width:30ch;margin-bottom:22px">Quiet is the good outcome. Raise the odds you hear about the next one early.</p>'+
-  '<div class="stack" style="width:100%;max-width:280px"><button class="btn sec">Invite your neighbours</button>'+
-  '<button class="btn qui" data-go="places">Follow another place</button></div>'+
- '</div>'+tabs('home');
-},
-
-ob1(){
- const pins=[{x:63,y:16,c:'var(--crit)',l:'Security',f:1},
-  {x:38,y:38,c:'var(--imp)',l:'Tree down'},
-  {x:19,y:62,c:'var(--info)',l:'Outage · 47'},
-  {x:70,y:76,c:'var(--imp)',l:'Flooding'}];
- return '<div class="ob1"><div class="ob1-map">'+big()+
-  '<span class="me" style="left:42%;top:56%"><i></i></span>'+
-  pins.map(p=>'<span class="pin'+(p.f?' faint':'')+'" style="left:'+p.x+'%;top:'+p.y+'%;--pc:'+p.c+'"><button tabindex="-1">'+I.pin+p.l+'</button></span>').join('')+
-  '<span class="ob1-scrim"></span></div>'+
-  sbar()+
-  '<div class="ob1-c">'+
-   '<span class="lab" style="display:block;margin-bottom:14px">Ikeja GRA · right now</span>'+
-   '<h2 class="h-xl" style="font-size:33px">Important things happening nearby. In time to matter.</h2>'+
-   '<p class="bd" style="margin-top:14px;max-width:32ch">The blocked road, the outage, the incident at the gate, while it still changes what you would do.</p>'+
-   '<div class="dots"><i class="on"></i><i></i><i></i></div>'+
-   '<div class="stack"><button class="btn" data-go="ob2">Get started</button></div>'+
-  '</div></div>';
-},
-
-ob2(){
- return sbar()+'<div class="ob"><div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding:16px 0">'+
- '<h2 class="h-xl" style="font-size:30px">Where should we keep you informed?</h2>'+
- '<p class="bd" style="margin-top:12px">You can change this any time, and add as many places as you like.</p>'+
- '<div class="pts">'+
-  '<div class="pt"><span class="pi">'+I.pin+'</span><div><h4>Wherever I am</h4><p>We use your rough area, about 500 m. Never your exact street.</p></div></div>'+
-  '<div class="pt"><span class="pi">'+I.home+'</span><div><h4>A place I choose</h4><p>Home, work, your child’s school. Watched even when you are not there.</p></div></div>'+
-  '<div class="pt"><span class="pi">'+I.security+'</span><div><h4>Nobody sees where you are</h4><p>Your location is only ever used to decide what to show you.</p></div></div>'+
- '</div></div>'+
- '<div class="dots"><i></i><i class="on"></i><i></i></div>'+
- '<div class="stack"><button class="btn" data-go="ob3">Use where I am</button>'+
- '<button class="btn sec">Choose a place instead</button>'+
- '<button class="btn qui" data-tab="home">Skip for now</button></div></div>';
-},
-
-ob3(){
- return sbar()+'<div class="ob" style="opacity:.35;pointer-events:none">'+
- '<div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">'+
- '<h2 class="h-xl" style="font-size:30px">Where should we keep you informed?</h2>'+
- '<p class="bd" style="margin-top:12px">You can change this any time.</p></div>'+
- '<div class="stack"><span class="btn">Use where I am</span></div></div>'+
- '<div class="veil"><div class="perm"><div class="perm-b">'+
-  '<h5>Allow “Community Alerts System” to use your location?</h5>'+
-  '<p>Your approximate location is used to show alerts near you. It is never shared with other people.</p>'+
-  '<div class="perm-map">'+permMap()+'</div></div>'+
-  '<div class="perm-o"><button class="b" data-go="home">Allow While Using App</button>'+
-  '<button data-go="home">Allow Once</button><button data-go="empty">Don’t Allow</button></div>'+
- '</div></div>';
-}};
-
-function big(){return '<svg class="msvg" viewBox="0 0 390 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
- '<rect width="390" height="640" fill="#0A0A0B"/>'+
- '<g stroke="#1B1B1E" stroke-width="17" stroke-linecap="round"><path d="M-20 160 H410"/><path d="M-20 360 H410"/><path d="M-20 550 H410"/><path d="M96 -20 V660"/><path d="M262 -20 V660"/></g>'+
- '<g stroke="#242428" stroke-width="6" opacity=".85"><path d="M-20 80 H410"/><path d="M-20 262 H410"/><path d="M-20 456 H410"/><path d="M34 -20 V660"/><path d="M178 -20 V660"/><path d="M336 -20 V660"/></g>'+
- '<path d="M-20 300 Q110 274 198 316 T410 282" stroke="#16252B" stroke-width="20" fill="none"/>'+
- '<g fill="#141417"><rect x="110" y="178" width="52" height="44" rx="4"/><rect x="110" y="232" width="52" height="26" rx="4"/>'+
- '<rect x="282" y="178" width="44" height="48" rx="4"/><rect x="42" y="392" width="42" height="34" rx="4"/>'+
- '<rect x="282" y="390" width="48" height="44" rx="4"/><rect x="112" y="392" width="50" height="32" rx="4"/>'+
- '<rect x="196" y="486" width="46" height="34" rx="4"/><rect x="40" y="196" width="40" height="32" rx="4"/></g>'+
- '<circle cx="156" cy="269" r="112" fill="#FAFAFA" opacity=".035"/>'+
- '<circle cx="156" cy="269" r="112" fill="none" stroke="#FAFAFA" stroke-width="1" stroke-dasharray="4 7" opacity=".2"/>'+
- '<g fill="#4A4B50" font-family="Inter, sans-serif" font-size="9" font-weight="500" letter-spacing=".1em">'+
- '<text x="14" y="154">ISAAC JOHN ST</text><text x="14" y="354">ODUDUWA WAY</text><text x="14" y="544">SOWEMIMO ST</text></g></svg>';}
-function mini(c){return '<svg viewBox="0 0 340 120" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">'+
- '<rect width="340" height="120" fill="#0A0A0B"/>'+
- '<g stroke="#1B1B1E" stroke-width="13" stroke-linecap="round"><path d="M-10 64 H350"/><path d="M172 -10 V130"/></g>'+
- '<g stroke="#242428" stroke-width="4"><path d="M-10 20 H350"/><path d="M-10 104 H350"/><path d="M70 -10 V130"/><path d="M272 -10 V130"/></g>'+
- '<g fill="#141417"><rect x="188" y="18" width="40" height="26" rx="3"/><rect x="96" y="78" width="34" height="22" rx="3"/></g>'+
- '<circle cx="172" cy="64" r="30" fill="'+c+'" opacity=".14"/>'+
- '<circle cx="172" cy="64" r="6.5" fill="'+c+'" stroke="#0A0A0B" stroke-width="2.4"/>'+
- '<circle cx="118" cy="84" r="5" fill="#4FA8F7" stroke="#0A0A0B" stroke-width="2"/></svg>';}
-function permMap(){return '<svg viewBox="0 0 244 78" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">'+
- '<rect width="244" height="78" fill="#2A2A2D"/><g stroke="#333336" stroke-width="9"><path d="M-10 24 H254"/><path d="M-10 60 H254"/><path d="M80 -10 V88"/><path d="M170 -10 V88"/></g>'+
- '<circle cx="122" cy="42" r="24" fill="#4FA8F7" opacity=".2"/><circle cx="122" cy="42" r="6" fill="#4FA8F7" stroke="#2A2A2D" stroke-width="2.2"/></svg>';}
-const NOTES={
-ob1:{t:'Welcome',job:'The first thing a new user sees. It shows a live slice of the map so the app explains itself before it asks for anything.',
- n:[['see','What you are looking at','Four live alerts around Ikeja GRA, a fictional estate in Lagos. The blue dot is you; the dashed circle is the area you get alerted about. The <b>red dashed pin</b> is a report nobody has confirmed yet, and it looks different on purpose.'],
-    ['do','Try it','Tap <b>Get started</b> to move on to choosing a location.']]},
-ob2:{t:'Choosing a location',job:'How the app decides what counts as “near you”. You can follow somewhere you are not.',
- n:[['see','What you are looking at','Three promises: a rough area rather than your street, places you pick yourself, and no sharing of your position with anyone.'],
-    ['do','Try it','<b>Use where I am</b> brings up the iOS permission prompt. <b>Skip for now</b> goes straight to the feed. Refusing is a supported path, not a dead end.']]},
-ob3:{t:'Location permission',job:'The system prompt. The screens before it exist to make this one make sense.',
- n:[['see','What you are looking at','A real iOS location dialog, shown only after the person has been told what it is for.'],
-    ['do','Try it','<b>Allow</b> opens the feed. <b>Don’t Allow</b> takes you to screen 13, the quiet area. The app still works, it just watches a place you pick instead.']]},
-home:{t:'Home',job:'The main screen, and the one question the whole product answers: is anything happening around me that I should know about?',
- n:[['see','What you are looking at','One alert is promoted to the top, chosen by distance and confidence together. Below it, a stream ordered by how close and how recent. Distance runs down the left edge so you can scan by proximity. The coloured tick before each category is severity.'],
-    ['see','The security alert','Second in the stream, and the most important thing on this screen. It is red because it is serious, but its status is deliberately quiet, <b>Unverified · 1 report</b>, and it states that it has <b>not been sent to anyone</b> as a notification. One person alone cannot ring hundreds of phones.'],
-    ['do','Try it','Tap any alert to open it. The <b>bell</b> opens notification settings, and the <b>+</b> in the tab bar starts a report.']]},
-detail:{t:'Alert detail',job:'Everything known about one alert, and where you tell the community whether it is true.',
- n:[['see','What you are looking at','A timeline of what changed and when, rather than a comment thread. The small map is pinned to the junction, not to whoever reported it, so reporting something does not reveal where you were standing.'],
-    ['do','Answer the question','Tap <b>I see it</b> and watch the confirmation count rise and the trust state change. On the security alert this also clears the held-from-notifications warning. It has been corroborated, so now it can be sent.'],
-    ['do','Try the aged one','Go back and open <b>Water rising around the underpass</b>. It is an hour old, so it asks <i>is this still happening?</i> instead of <i>did this happen?</i> Answering “it’s over” resolves it.']]},
-map:{t:'Map',job:'The same alerts, placed. Useful for seeing what sits between you and where you are going.',
- n:[['see','What you are looking at','Your position, your alert radius as the dashed ring, and a pin per alert. The <b>dashed outline pin</b> is the unconfirmed one. A map where every pin looks equally true would be misleading.'],
-    ['do','Try it','Tap any pin to load that alert into the sheet at the bottom, then tap the card to open it in full.']]},
-cat:{t:'Reporting: what happened',job:'Step one of filing a report. It has to work one-handed, in the rain, by someone who is upset.',
- n:[['see','What you are looking at','Eight categories covering safety, transport, utilities and community notices. Structured rather than free text, because the category is what decides who gets told and how loudly.'],
-    ['do','Try it','Pick any category. <b>Security</b> or <b>Fire</b> are worth trying, because they behave differently at the end of the flow.']]},
-review:{t:'Reporting: check and send',job:'Everything else about the report on one screen, with the consequence sitting right above the button that causes it.',
- n:[['see','What you are looking at','The location is already filled in and snapped to the nearest junction. The audience is <b>calculated from the category</b>, not asked of you. A road blockage reaches along the road, an outage reaches wider.'],
-    ['do','Try it','Type a description, or do not. It is optional. Tap <b>Adjust</b> to change the radius and watch the number of people update, and for a road report, to set which direction is affected.'],
-    ['do','Then send','Tap <b>Send alert</b>.']]},
-sent:{t:'Report sent',job:'Confirmation, and an honest account of what happens next.',
- n:[['see','What you are looking at','For an ordinary category this tells you how many phones it reached. For <b>Security</b> or <b>Fire</b> it says the opposite, that no notification has gone out yet, and someone else nearby has to confirm it first.'],
-    ['do','Compare them','Go back to screen 07, file a <b>power outage</b>, and compare this screen with what you get after filing a <b>security</b> report.']]},
-places:{t:'Places',job:'Everywhere you are watching: where you are now, places you pinned, and areas you follow.',
- n:[['see','What you are looking at','Three groups, three different meanings. Each place carries its own alert radius and its own notification level, summarised on one line.'],
-    ['see','On privacy','Pinned places are never published. Nobody can tell that anyone has pinned a particular house or street, and your live location is kept as a rough area rather than an address.'],
-    ['do','Try it','Toggle <b>Where I am</b> off and on.']]},
-notif:{t:'Notifications',job:'What is allowed to interrupt you. For an app like this, getting it wrong is what makes people delete it.',
- n:[['see','What you are looking at','Three tiers. <b>Critical</b> interrupts, <b>Important</b> notifies and batches, and the rest stays in the feed with no notification at all.'],
-    ['see','The critical rows have no switch','They say <i>Always on</i> instead. That is the promise the app makes, but it is capped at four a day however many are reported, and an unconfirmed report never becomes one.'],
-    ['do','Try it','Toggle anything in <b>Important</b> or <b>For the feed</b>. The critical rows will not move.']]},
-lock:{t:'Lock screen',job:'How an alert actually arrives. Most people will read it here and act on it without ever opening the app.',
- n:[['see','What you are looking at','Distance and direction in the headline, because those are the two facts that change what you do next. Underneath, the trust state, <b>14 people nearby confirmed</b>, so an alert is never an anonymous claim.'],
-    ['see','The faded second one','That is a batched outage notification. Forty-seven people reported the same blackout and it produced one quiet notification, not forty-seven.']]},
-empty:{t:'A quiet area',job:'What you see when nothing is happening, which, in a healthy community, is most evenings.',
- n:[['see','What you are looking at','Coverage instead of content. <b>47 people watching this area</b> tells you the app is working and the area is calm; an empty list cannot tell those two apart and just looks broken.'],
-    ['do','Try it','The two buttons are the two things that actually help: more neighbours watching, or following somewhere with more going on.']]}
-};
-
-const ORDER=['ob1','ob2','ob3','home','detail','map','cat','review','sent','places','notif','lock','empty'];
-const NUM={};ORDER.forEach((k,i)=>NUM[k]=String(i+1).padStart(2,'0'));
-const CAP={ob1:'Value',ob2:'Where to watch',ob3:'Permission',home:'Home',detail:'Alert detail',map:'Map',cat:'What happened',review:'Review',sent:'Sent',places:'Places',notif:'Notifications',lock:'Lock screen',empty:'Quiet area'};
-const phone=document.getElementById('phone');
-
-function render(){
- phone.innerHTML='<div class="sc" data-on="1">'+B[S.screen]()+'</div>';
- document.querySelectorAll('.nav-b').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===S.screen)));
- document.getElementById('cap').textContent=NUM[S.screen]+' \u00b7 '+CAP[S.screen];
- const n=NOTES[S.screen];
- document.getElementById('n-eye').textContent='Screen '+NUM[S.screen]+' of 13';
- document.getElementById('n-title').textContent=n.t;
- document.getElementById('n-job').textContent=n.job;
- document.getElementById('n-notes').innerHTML=n.n.map(x=>{
-  const c={do:'t-do',see:'t-see'}[x[0]]||'t-see';
-  
-  let b='<p>'+x[2]+'</p>';
-  if(x[0]==='ref'&&x[3]){const[h,t]=x[3].split('|');b+='<div class="refs"><a href="'+h+'" target="_blank" rel="noopener">'+t+' ↗</a></div>';}
-  return '<div class="note"><span class="n-tag '+c+'">'+x[1]+'</span>'+b+'</div>';
- }).join('');
- wire();
-}
-function go(s){S.screen=s;render();}
-function toast(m){const t=document.createElement('div');t.className='toast';
- t.innerHTML='<span style="color:var(--ok)">'+I.check+'</span><span>'+m+'</span>';
- phone.querySelector('.sc').appendChild(t);setTimeout(()=>t.remove(),2200);}
-
-function wire(){
- phone.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;go(t==='you'?'notif':t);});
- phone.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
- phone.querySelectorAll('[data-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();S.open=b.dataset.open;
-   if(S.screen==='map')render();else go('detail');});
- phone.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;go('review');});
- phone.querySelectorAll('[data-ans]').forEach(b=>b.onclick=()=>{
-  const[id,v]=b.dataset.ans.split('|');const a=alerts.find(x=>x.id===id);
-  b.classList.add('on');
-  setTimeout(()=>{S.ans[id]=v;
-   if(v==='yes'){S.cnt[id]++;if(a.trust==='un'){a.trust='multi';a.held=false;}}
-   if(v==='over'){a.sev='resolved';a.trust='ok';}
-   render();toast(v==='over'?'Marked as over. Others nearby will be asked too.':'Counted. This alert is stronger now.');},220);
- });
- phone.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{
-  const s=b.classList.contains('sw')?b:b.querySelector('.sw');if(s)s.classList.toggle('on');});
- const ta=phone.querySelector('#ta');
- if(ta)ta.oninput=()=>{phone.querySelector('#cc').textContent=ta.value.length+' / 280';};
- const adj=phone.querySelector('#adjb');
- if(adj)adj.onclick=()=>{const bx=phone.querySelector('#adjbox');
-  const closed=bx.classList.toggle('hide');adj.textContent=closed?'Adjust':'Done';};
- const ch=phone.querySelector('#chips');
- if(ch){const c=CATS.find(x=>x.k===S.cat);const m=[.35,1,1.9,3.4];
-  ch.querySelectorAll('.pick').forEach(p=>p.onclick=()=>{
-   ch.querySelectorAll('.pick').forEach(o=>o.classList.remove('on'));p.classList.add('on');
-   const v=Math.round(c.p*m[+p.dataset.r]/10)*10;
-   phone.querySelector('#rn').innerHTML='~'+v+'<span>people</span>';
-   phone.querySelector('#sn').textContent='Reaches about '+v+' people around Ikeja GRA';
-   if(+p.dataset.r!==1)phone.querySelector('#rw').innerHTML='Changed from the suggested <b>'+c.r+'</b>. Wider is not always better. It costs you trust with people it did not concern.';
-  });}
- const dir=phone.querySelector('#dir');
- if(dir)dir.querySelectorAll('.pick').forEach(p=>p.onclick=()=>{
-  dir.querySelectorAll('.pick').forEach(o=>o.classList.remove('on'));p.classList.add('on');});
- const sd=phone.querySelector('#send');
- if(sd)sd.onclick=()=>{sd.textContent='Sending…';sd.disabled=true;setTimeout(()=>go('sent'),500);};
-}
-document.querySelectorAll('.nav-b').forEach(b=>b.onclick=()=>go(b.dataset.go));
-document.getElementById('next').onclick=()=>go(ORDER[(ORDER.indexOf(S.screen)+1)%ORDER.length]);
-document.getElementById('prev').onclick=()=>go(ORDER[(ORDER.indexOf(S.screen)-1+ORDER.length)%ORDER.length]);
-document.addEventListener('keydown',e=>{if(e.target.matches('textarea,input'))return;
- if(e.key==='ArrowRight')document.getElementById('next').click();
- if(e.key==='ArrowLeft')document.getElementById('prev').click();});
-render();
-</script>
+<footer><div class="m ft">
+  <p>Built by <a href="https://x.com/__Smute" target="_blank" rel="noopener">Smute</a>. A design prototype, not a live service.</p>
+  <nav>
+    <a class="nl" href="/prototype">Prototype</a>
+    <a class="nl" href="/directions">Studies</a>
+    <a class="nl" href="https://github.com/SMUTEE/community-alerts-system" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</div></footer>
 
 </body>
 </html>
