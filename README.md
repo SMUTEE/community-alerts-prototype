@@ -4,6 +4,8 @@ An interactive prototype of a location-aware platform for reporting and
 verifying things happening in your immediate area: a blocked road, an outage,
 an incident at the estate gate.
 
+**[Open the prototype](https://community-alerts-prototype.vercel.app)**
+
 Thirteen screens, all live. Nothing is wired to a backend: confirmations,
 toggles and the reporting flow mutate in-memory state so the flows can be
 walked end to end. Nothing you do is saved or sent anywhere.
