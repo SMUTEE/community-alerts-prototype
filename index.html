@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#09090A">
+<meta name="description" content="A clickable hi-fi prototype of Community Alerts — a location-aware community alerting app — across 13 screens, with the experience audit attached to each one.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Community Alerts — hi-fi prototype">
+<meta property="og:description" content="A clickable hi-fi prototype of Community Alerts — a location-aware community alerting app — across 13 screens, with the experience audit attached to each one.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309090A'/%3E%3Cpath d='M16 7.5C12.4 7.5 9.5 10.4 9.5 14c0 4.6 6.5 10.5 6.5 10.5S22.5 18.6 22.5 14c0-3.6-2.9-6.5-6.5-6.5z' fill='none' stroke='%23FAFAFA' stroke-width='2'/%3E%3Ccircle cx='16' cy='13.8' r='2.2' fill='%23FF5F52'/%3E%3C/svg%3E">
+<style>
+  html,body{height:100%}
+  :root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Community Alerts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+@font-face{font-family:Satoshi;src:url('satoshi.woff2') format('woff2');font-weight:300 900;font-style:normal;font-display:swap}
+
+/* Layout: quiet studio bench — index, device, and the audit note for the open screen; one column under 940px. */
+:root{
+  --pg:#E9EAEA; --pg-2:#F6F7F7; --card:#FFFFFF; --ink:#131415; --ink-2:#5C6164;
+  --ink-3:#8D9295; --line:#D3D6D7; --accent:#12494F; --shadow:0 28px 64px -20px rgba(9,17,20,.42);
+  --f:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-u:"Inter",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+
+  /* App — fixed in both themes: this is the product */
+  --bg:#09090A; --surf:#131315; --surf-2:#1A1A1D; --raise:#202024;
+  --fg:#FAFAFA; --fg-2:#A2A3A7; --fg-3:#6C6D72; --hair:#1E1E21; --hair-2:#2A2A2E;
+  --crit:#FF5F52; --imp:#E9A13B; --info:#6BA8D8; --ok:#4FC48A;
+  --crit-d:#2A1513; --imp-d:#241C10; --info-d:#131E27; --ok-d:#10231A;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --pg:#0C0C0D; --pg-2:#151517; --card:#1A1A1C; --ink:#F0F0F1; --ink-2:#A0A2A5;
+  --ink-3:#77797D; --line:#2A2A2D; --accent:#68BAC2; --shadow:0 28px 64px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --pg:#0C0C0D; --pg-2:#151517; --card:#1A1A1C; --ink:#F0F0F1; --ink-2:#A0A2A5;
+  --ink-3:#77797D; --line:#2A2A2D; --accent:#68BAC2; --shadow:0 28px 64px -20px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:5px}
+.u{font-family:var(--f-u);font-feature-settings:"tnum" 1}
+
+/* ---------- bench ---------- */
+.wrap{max-width:1280px;margin:0 auto;padding-inline:22px;padding-block:34px 58px}
+.head{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:20px}
+.eyebrow{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+h1{font-size:clamp(30px,4.6vw,42px);font-weight:700;line-height:1;letter-spacing:-.035em;margin:0}
+.lede{margin:11px 0 0;max-width:62ch;font-size:14.5px;line-height:1.6;color:var(--ink-2)}
+.tag{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap}
+
+.bench{display:grid;grid-template-columns:186px minmax(0,390px) minmax(0,1fr);gap:32px;align-items:start;margin-top:30px}
+@media (max-width:1040px){.bench{grid-template-columns:166px minmax(0,390px) minmax(0,1fr);gap:22px}}
+@media (max-width:940px){.bench{grid-template-columns:minmax(0,1fr);justify-items:center;gap:28px}.nav-col,.notes-col{width:100%;max-width:520px}}
+
+.nav-col{position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px)}
+@media (max-width:940px){.nav-col{position:static}}
+.nav-g{margin-bottom:20px}
+.nav-h{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px;padding-left:2px}
+.nav-l{display:flex;flex-direction:column;gap:1px}
+@media (max-width:940px){.nav-l{flex-direction:row;flex-wrap:wrap;gap:6px}}
+.nav-b{display:flex;align-items:center;gap:10px;text-align:left;padding:7px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink-2);line-height:1.3;transition:background .12s,color .12s}
+.nav-b .n{font-family:var(--f-u);font-size:10px;font-weight:500;color:var(--ink-3);flex-shrink:0}
+.nav-b:hover{background:var(--pg-2);color:var(--ink)}
+.nav-b[aria-current="true"]{background:var(--ink);color:var(--pg)}
+.nav-b[aria-current="true"] .n{color:var(--pg);opacity:.55}
+
+.dev{display:flex;flex-direction:column;align-items:center;gap:15px}
+.phone{width:390px;max-width:100%;aspect-ratio:390/800;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);box-shadow:var(--shadow),0 0 0 9px #141415,0 0 0 10.5px #383A3B}
+.pager{display:flex;gap:8px}
+.pg{border:1px solid var(--line);border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.pg:hover{border-color:var(--accent);color:var(--ink)}
+.cap{font-family:var(--f-u);font-size:10.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+
+.notes{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
+.n-eye{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+.n-h{font-size:26px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px;line-height:1.08}
+.n-job{margin:0 0 20px;font-size:13.5px;line-height:1.6;color:var(--ink-2);max-width:58ch}
+.note{border-top:1px solid var(--line);padding-top:15px;margin-top:15px}
+.note:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.n-tag{display:inline-block;font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;padding:4px 8px;border-radius:5px;margin-bottom:8px}
+.t-fix{background:#F6EEDC;color:#6E4C12}
+.t-keep{background:#E3EFEA;color:#245542}
+.t-risk{background:#F9E7E5;color:#7E251D}
+.t-ref{background:var(--pg-2);color:var(--ink-2);border:1px solid var(--line)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .t-fix{background:#2C2416;color:#E5BC72}
+ :root:not([data-theme="light"]) .t-keep{background:#15291F;color:#7FCFA8}
+ :root:not([data-theme="light"]) .t-risk{background:#2C1917;color:#F0968B}}
+:root[data-theme="dark"] .t-fix{background:#2C2416;color:#E5BC72}
+:root[data-theme="dark"] .t-keep{background:#15291F;color:#7FCFA8}
+:root[data-theme="dark"] .t-risk{background:#2C1917;color:#F0968B}
+.note p{margin:0;font-size:13.5px;line-height:1.62;color:var(--ink);max-width:60ch}
+.note p b{font-weight:600}
+.refs{margin-top:8px}
+.refs a{display:inline-block;font-family:var(--f-u);font-size:10.5px;color:var(--ink-2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:0 5px 5px 0}
+.refs a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* =====================================================
+   APP — Direction B, refined
+   ===================================================== */
+.sc{flex:1;min-height:0;display:none;flex-direction:column}
+.sc[data-on="1"]{display:flex}
+.roll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.roll::-webkit-scrollbar{width:0}
+
+.sbar{flex-shrink:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 27px 0 31px;
+  font-family:var(--f-u);font-size:12.5px;font-weight:500;letter-spacing:-.01em;color:var(--fg);position:relative;z-index:9}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-b{display:flex;align-items:flex-end;gap:1.6px;height:9px}
+.sb-b i{width:2.6px;background:currentColor;border-radius:1px;display:block}
+.batt{width:21px;height:10.5px;border:1.3px solid currentColor;border-radius:3px;position:relative;opacity:.85}
+.batt::after{content:"";position:absolute;inset:1.6px;right:5px;background:currentColor;border-radius:1px}
+
+/* type roles */
+.lab{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
+.met{font-family:var(--f-u);font-size:11px;font-weight:400;color:var(--fg-3);font-feature-settings:"tnum" 1}
+.h-xl{font-size:34px;font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0}
+.h-l{font-size:27px;font-weight:700;letter-spacing:-.035em;line-height:1.06;margin:0}
+.h-m{font-size:20px;font-weight:600;letter-spacing:-.028em;line-height:1.15;margin:0}
+.bd{font-size:14.5px;line-height:1.55;color:var(--fg-2);margin:0}
+
+/* header */
+.hdr{flex-shrink:0;padding:2px 22px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+.hdr .sub{margin:8px 0 0;display:flex;align-items:center;gap:7px}
+.live{width:6px;height:6px;border-radius:50%;background:var(--crit);flex-shrink:0;animation:p 2.6s infinite}
+.live.calm{background:var(--ok);animation:none}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(255,95,82,.55)}70%{box-shadow:0 0 0 8px rgba(255,95,82,0)}100%{box-shadow:0 0 0 0 rgba(255,95,82,0)}}
+.circ{width:38px;height:38px;border-radius:50%;border:1px solid var(--hair-2);display:grid;place-items:center;color:var(--fg-2);flex-shrink:0;position:relative}
+.circ:hover{border-color:var(--fg-3);color:var(--fg)}
+.circ .pip{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--crit);border:2px solid var(--bg)}
+.segs{flex-shrink:0;display:flex;gap:24px;padding:0 22px;border-bottom:1px solid var(--hair)}
+.seg{font-size:14px;font-weight:600;letter-spacing:-.015em;color:var(--fg-3);padding:0 0 12px;position:relative}
+.seg[aria-selected="true"]{color:var(--fg)}
+.seg[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1.5px;background:var(--fg)}
+
+/* hero */
+.hero{margin:16px 16px 0;border-radius:20px;padding:20px 19px 18px;position:relative;overflow:hidden;text-align:left;width:calc(100% - 32px);display:block}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(158deg,var(--hd) 0%,#0F0F11 70%);opacity:.9}
+.hero>*{position:relative}
+.hero .kick{display:flex;align-items:center;gap:8px;color:var(--hc);margin-bottom:13px}
+.hero .kick i{width:6px;height:6px;border-radius:50%;background:currentColor;display:block}
+.hero h3{font-size:29px;font-weight:700;letter-spacing:-.038em;line-height:1.03;margin:0;color:var(--fg);text-wrap:balance}
+.hero p{font-size:13.5px;line-height:1.5;color:var(--fg-2);margin:11px 0 0;max-width:31ch}
+.hero .row{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.chip{font-family:var(--f-u);font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:5px 9px;border-radius:6px;
+  background:rgba(255,255,255,.06);color:var(--fg-2);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.chip.good{background:rgba(79,196,138,.13);color:#7DD6AA}
+.chip.warn{background:rgba(233,161,59,.13);color:#EEBB74}
+
+/* stream */
+.strm{padding-top:4px}
+.item{display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;padding:16px 22px;border-bottom:1px solid var(--hair);text-align:left;width:100%;align-items:start}
+.item:hover{background:var(--surf)}
+.dist{font-family:var(--f-u);font-size:15px;font-weight:500;color:var(--fg);letter-spacing:-.02em;font-feature-settings:"tnum" 1;line-height:1.15}
+.dist span{display:block;font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:4px}
+.ibody{min-width:0}
+.icat{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--sc);display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.icat i{width:5px;height:5px;border-radius:50%;background:var(--sc);display:block;flex-shrink:0}
+.it{font-size:16.5px;font-weight:600;letter-spacing:-.028em;line-height:1.2;margin:0 0 7px;color:var(--fg);text-wrap:balance}
+.im{font-family:var(--f-u);font-size:11px;color:var(--fg-3);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-feature-settings:"tnum" 1}
+.im .v{color:var(--ok);display:inline-flex;align-items:center;gap:4px}
+.im .un{color:var(--fg-3);border:1px dashed var(--hair-2);padding:2px 7px;border-radius:5px}
+.held{display:flex;gap:8px;align-items:flex-start;margin-top:9px;padding:9px 11px;border-radius:9px;background:var(--imp-d);color:#E8B975;font-size:11.5px;line-height:1.45}
+.held svg{flex-shrink:0;margin-top:1px}
+
+/* tabs */
+.tabs{flex-shrink:0;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(5,1fr);
+  padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px));align-items:center;background:var(--bg)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--fg-3);font-family:var(--f-u);font-size:9.5px;font-weight:500;letter-spacing:.02em}
+.tab[aria-current="true"]{color:var(--fg)}
+.fab{width:42px;height:42px;border-radius:14px;background:var(--fg);color:var(--bg);display:grid;place-items:center}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border-radius:14px;padding:15px;font-size:15.5px;font-weight:600;letter-spacing:-.015em;background:var(--fg);color:var(--bg)}
+.btn:hover{opacity:.9}
+.btn.sec{background:transparent;color:var(--fg);border:1px solid var(--hair-2)}
+.btn.sec:hover{border-color:var(--fg-3);opacity:1}
+.btn.qui{background:transparent;color:var(--fg-3);font-weight:500}
+.btn.qui:hover{color:var(--fg-2);opacity:1}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.stack{display:flex;flex-direction:column;gap:9px}
+
+/* onboarding */
+.ob{flex:1;display:flex;flex-direction:column;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
+.ob-art{flex:1;min-height:0;display:grid;place-items:center;padding:10px 0}
+.dots{display:flex;gap:6px;justify-content:center;padding:16px 0 14px}
+.dots i{width:5px;height:5px;border-radius:50%;background:var(--hair-2);display:block}
+.dots i.on{background:var(--fg);width:17px;border-radius:3px}
+.pts{display:flex;flex-direction:column;gap:20px;margin:26px 0 0}
+.pt{display:grid;grid-template-columns:22px 1fr;gap:14px;align-items:start}
+.pt .pi{color:var(--fg-3);margin-top:2px}
+.pt h4{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}
+.pt p{margin:0;font-size:13px;line-height:1.5;color:var(--fg-3)}
+
+/* onboarding map hero */
+.ob1{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.ob1-map{position:absolute;top:0;left:0;right:0;height:57%;overflow:hidden;pointer-events:none}
+.ob1-map .pin button{pointer-events:none}
+.ob1-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(9,9,10,.28) 0%,rgba(9,9,10,0) 30%,rgba(9,9,10,.55) 62%,rgba(9,9,10,.94) 84%,var(--bg) 100%)}
+.ob1-c{margin-top:auto;position:relative;z-index:2;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
+
+/* iOS permission */
+.veil{position:absolute;inset:0;background:rgba(0,0,0,.62);display:grid;place-items:center;padding:30px;z-index:20}
+.perm{background:#1C1C1E;border-radius:15px;width:100%;max-width:270px;overflow:hidden;text-align:center;box-shadow:0 26px 54px -12px rgba(0,0,0,.6)}
+.perm-b{padding:19px 18px 0}
+.perm h5{margin:0 0 6px;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.02em}
+.perm p{margin:0 0 14px;font-size:12.5px;line-height:1.42;color:#98989E;font-family:var(--f-u)}
+.perm-map{height:78px;margin:0 -18px;position:relative;overflow:hidden;background:#2A2A2D}
+.perm-o{border-top:.5px solid #38383A}
+.perm-o button{display:block;width:100%;padding:12px;font-size:15px;color:#4FA8F7;border-bottom:.5px solid #38383A;font-family:var(--f-u)}
+.perm-o button:last-child{border-bottom:0}
+.perm-o button.b{font-weight:600}
+.perm-o button:hover{background:rgba(255,255,255,.05)}
+
+/* detail */
+.d-hero{padding:14px 22px 20px}
+.d-kick{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+.d-cat{font-family:var(--f-u);font-size:9.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--sc);display:flex;align-items:center;gap:7px}
+.d-cat i{width:5px;height:5px;border-radius:50%;background:var(--sc);display:block}
+.d-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.blk{padding:20px 22px;border-top:1px solid var(--hair)}
+.blk-h{margin:0 0 14px}
+.ask{background:var(--surf);border-radius:16px;padding:16px}
+.ask h4{margin:0 0 6px;font-size:16px;font-weight:600;letter-spacing:-.025em;color:var(--fg)}
+.ask p{margin:0 0 14px;font-size:12.5px;line-height:1.5;color:var(--fg-3)}
+.askrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.askb{border:1px solid var(--hair-2);border-radius:11px;padding:11px 4px;font-size:12.5px;font-weight:600;letter-spacing:-.01em;color:var(--fg)}
+.askb:hover{border-color:var(--fg-3)}
+.askb.on{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.done{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ok);font-weight:500}
+.tl{display:flex;flex-direction:column}
+.tl-i{display:grid;grid-template-columns:14px 1fr;gap:13px;padding-bottom:18px;position:relative}
+.tl-i:last-child{padding-bottom:0}
+.tl-i::before{content:"";position:absolute;left:6.5px;top:14px;bottom:0;width:1px;background:var(--hair-2)}
+.tl-i:last-child::before{display:none}
+.tl-d{width:7px;height:7px;border-radius:50%;background:var(--hair-2);margin:5px 0 0 3.5px;z-index:1}
+.tl-d.hl{background:var(--ok)}
+.tl p{margin:0;font-size:14px;line-height:1.5;color:var(--fg)}
+.tl .met{margin-top:5px;display:block}
+.actb{flex-shrink:0;border-top:1px solid var(--hair);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mini{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:12px;font-size:13.5px;font-weight:600;color:var(--fg-2);border:1px solid var(--hair-2)}
+.mini:hover{color:var(--fg);border-color:var(--fg-3)}
+
+/* create */
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 16px 20px}
+.cat{display:flex;align-items:center;gap:12px;background:var(--surf);border-radius:15px;padding:15px 14px;text-align:left}
+.cat:hover{background:var(--surf-2)}
+.cat .ci{color:var(--sc);flex-shrink:0}
+.cat b{font-size:14px;font-weight:600;letter-spacing:-.02em;color:var(--fg);display:block;line-height:1.25}
+.cat .met{display:block;margin-top:3px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+.fld{padding:0 22px 20px}
+.flab{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+textarea{width:100%;font-family:var(--f);font-size:15px;line-height:1.5;color:var(--fg);background:var(--surf);border:1px solid transparent;border-radius:13px;padding:14px;resize:none}
+textarea:focus{outline:none;border-color:var(--hair-2)}
+textarea::placeholder{color:var(--fg-3)}
+.lrow{display:flex;align-items:center;gap:13px;background:var(--surf);border-radius:13px;padding:14px}
+.lrow .li{color:var(--sc,var(--fg-2));flex-shrink:0}
+.lrow .lt{flex:1;min-width:0}
+.lrow .lt b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}
+.lrow .lt .met{display:block;margin-top:3px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+.lrow .lc{font-size:13px;font-weight:600;color:var(--fg);flex-shrink:0}
+.reach{background:var(--surf);border-radius:13px;padding:16px}
+.reach-t{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.reach-n{font-size:26px;font-weight:700;letter-spacing:-.04em;color:var(--fg);font-family:var(--f-u);font-feature-settings:"tnum" 1}
+.reach-n span{font-family:var(--f);font-size:13px;font-weight:500;letter-spacing:-.01em;color:var(--fg-2);margin-left:3px}
+.reach p{margin:0;font-size:12.5px;line-height:1.5;color:var(--fg-3)}
+.reach p b{color:var(--fg-2);font-weight:600}
+.adj{margin-top:14px;padding-top:14px;border-top:1px solid var(--hair-2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.pick{border:1px solid var(--hair-2);border-radius:9px;padding:8px 12px;font-family:var(--f-u);font-size:11.5px;font-weight:500;color:var(--fg-2)}
+.pick.on{background:var(--fg);border-color:var(--fg);color:var(--bg);font-weight:600}
+.sendb{flex-shrink:0;border-top:1px solid var(--hair);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}
+.sendn{text-align:center;margin-top:11px;display:block}
+
+.sent{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px calc(24px + env(safe-area-inset-bottom,0px))}
+.tick{width:50px;height:50px;border-radius:50%;background:var(--ok-d);color:var(--ok);display:grid;place-items:center;margin-bottom:20px}
+.nxt{border-radius:14px;background:var(--surf);padding:16px;margin:20px 0 24px}
+.nxt ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.nxt li{display:grid;grid-template-columns:14px 1fr;gap:11px;font-size:13px;line-height:1.5;color:var(--fg-2)}
+.nxt li svg{margin-top:2px;color:var(--fg-3)}
+.nxt li b{color:var(--fg);font-weight:600}
+
+/* map */
+.mw{flex:1;min-height:0;position:relative}
+.msvg{position:absolute;inset:0;width:100%;height:100%}
+.mtop{position:absolute;top:0;left:0;right:0;padding:6px 16px;display:flex;gap:7px;z-index:5;overflow:hidden}
+.mf{background:rgba(24,24,27,.88);backdrop-filter:blur(10px);border:1px solid var(--hair-2);color:var(--fg-2);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.mf.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.pin{position:absolute;transform:translate(-50%,-100%);z-index:4}
+.pin button{display:flex;align-items:center;gap:6px;background:var(--pc);color:#0A0A0B;border-radius:999px;padding:6px 11px 6px 9px;font-size:11.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 8px 20px -6px rgba(0,0,0,.8)}
+.pin::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--pc);margin-top:-1px}
+.pin.faint button{background:transparent;color:var(--pc);border:1.5px dashed var(--pc)}
+.pin.faint::after{border-top-color:transparent}
+.me{position:absolute;transform:translate(-50%,-50%);z-index:3}
+.me i{display:block;width:15px;height:15px;border-radius:50%;background:#4FA8F7;border:3px solid var(--bg);box-shadow:0 0 0 8px rgba(79,168,247,.16)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surf);border-radius:22px 22px 0 0;z-index:6;max-height:52%;display:flex;flex-direction:column;box-shadow:0 -14px 40px -14px rgba(0,0,0,.7)}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--hair-2);margin:10px auto 2px;flex-shrink:0}
+
+/* rows */
+.rows{border-top:1px solid var(--hair)}
+.row{display:flex;align-items:center;gap:14px;padding:15px 22px;border-bottom:1px solid var(--hair);width:100%;text-align:left}
+.row .ri{color:var(--fg-3);flex-shrink:0}
+.rt{flex:1;min-width:0}
+.rt b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.02em;color:var(--fg);line-height:1.3}
+.rt .s{display:block;font-size:12.5px;color:var(--fg-2);margin-top:3px;line-height:1.4}
+.rt .met{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase}
+.sw{width:44px;height:26px;border-radius:13px;background:var(--hair-2);position:relative;flex-shrink:0;transition:background .16s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#78797E;transition:transform .16s,background .16s}
+.sw.on{background:var(--fg)}
+.sw.on::after{transform:translateX(18px);background:var(--bg)}
+.lockp{font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ok);background:var(--ok-d);border-radius:5px;padding:5px 8px;flex-shrink:0}
+.expl{padding:14px 22px 0;font-size:12.5px;line-height:1.55;color:var(--fg-3);margin:0}
+.sech{padding:24px 22px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tierh{padding:26px 22px 12px;display:flex;align-items:center;gap:9px}
+.tierh h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.025em;color:var(--fg)}
+.tierh .tp{font-family:var(--f-u);font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;padding:4px 8px;border-radius:5px}
+
+/* empty */
+.empty{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 30px 40px;text-align:center}
+.watch{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--hair-2);border-radius:999px;padding:7px 14px 7px 9px;margin-bottom:22px}
+.faces{display:flex}
+.faces i{width:20px;height:20px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px;display:block}
+.faces i:first-child{margin-left:0}
+
+/* lock */
+.lock{flex:1;display:flex;flex-direction:column;padding:0 13px calc(22px + env(safe-area-inset-bottom,0px));position:relative;overflow:hidden;
+  background:linear-gradient(168deg,#1A1B1E 0%,#0A0A0B 52%,#141518 100%)}
+.lock::before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;top:-110px;right:-110px;
+  background:radial-gradient(circle,rgba(255,95,82,.1),transparent 70%)}
+.ltime{text-align:center;padding:28px 0 26px;position:relative}
+.ltime .d{font-family:var(--f-u);font-size:13.5px;color:rgba(250,250,250,.6)}
+.ltime .t{font-size:70px;font-weight:500;color:#fff;line-height:1;letter-spacing:-.05em;margin-top:2px;font-family:var(--f-u);font-feature-settings:"tnum" 1}
+.nf{background:rgba(32,32,36,.82);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07);border-radius:17px;padding:13px 14px;margin-bottom:8px;position:relative}
+.nf.two{opacity:.45;transform:scale(.97)}
+.nf-t{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.nf-i{width:19px;height:19px;border-radius:5px;background:var(--fg);color:var(--bg);display:grid;place-items:center;flex-shrink:0}
+.nf-a{font-family:var(--f-u);font-size:11.5px;font-weight:500;color:var(--fg-2);flex:1}
+.nf h4{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-.025em;color:var(--fg);line-height:1.22}
+.nf p{margin:0;font-size:13.5px;line-height:1.4;color:var(--fg-2)}
+.nf .tr{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.07);color:var(--ok)}
+.lfoot{margin-top:auto;display:flex;justify-content:space-between;padding:0 18px}
+.lfoot i{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;color:#fff}
+
+.toast{position:absolute;left:16px;right:16px;bottom:16px;background:var(--raise);border:1px solid var(--hair-2);color:var(--fg);border-radius:13px;padding:14px 16px;display:flex;align-items:center;gap:11px;font-size:13.5px;z-index:40;box-shadow:0 14px 34px -10px rgba(0,0,0,.8)}
+.hide{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <p class="eyebrow">Hi-fi prototype · v2 · Direction B</p>
+      <h1>Community Alerts</h1>
+      <p class="lede">Thirteen screens, all live. Open an alert and confirm it, file a report, mute a tier. The audit for each screen sits alongside it.</p>
+    </div>
+    <span class="tag">Satoshi · Inter · Ikeja GRA</span>
+  </header>
+
+  <div class="bench">
+    <nav class="nav-col" aria-label="Screens">
+      <div class="nav-g"><p class="nav-h">Onboarding</p><div class="nav-l">
+        <button class="nav-b" data-go="ob1"><span class="n u">01</span>Value</button>
+        <button class="nav-b" data-go="ob2"><span class="n u">02</span>Where to watch</button>
+        <button class="nav-b" data-go="ob3"><span class="n u">03</span>Permission</button>
+      </div></div>
+      <div class="nav-g"><p class="nav-h">Core loop</p><div class="nav-l">
+        <button class="nav-b" data-go="home"><span class="n u">04</span>Home</button>
+        <button class="nav-b" data-go="detail"><span class="n u">05</span>Alert detail</button>
+        <button class="nav-b" data-go="map"><span class="n u">06</span>Map</button>
+      </div></div>
+      <div class="nav-g"><p class="nav-h">Reporting</p><div class="nav-l">
+        <button class="nav-b" data-go="cat"><span class="n u">07</span>What happened</button>
+        <button class="nav-b" data-go="review"><span class="n u">08</span>Review</button>
+        <button class="nav-b" data-go="sent"><span class="n u">09</span>Sent</button>
+      </div></div>
+      <div class="nav-g"><p class="nav-h">Control</p><div class="nav-l">
+        <button class="nav-b" data-go="places"><span class="n u">10</span>Places</button>
+        <button class="nav-b" data-go="notif"><span class="n u">11</span>Notifications</button>
+      </div></div>
+      <div class="nav-g"><p class="nav-h">Edges</p><div class="nav-l">
+        <button class="nav-b" data-go="lock"><span class="n u">12</span>Lock screen</button>
+        <button class="nav-b" data-go="empty"><span class="n u">13</span>Quiet area</button>
+      </div></div>
+    </nav>
+
+    <div class="dev">
+      <div class="phone" id="phone"></div>
+      <div class="pager"><button class="pg" id="prev">← Previous</button><button class="pg" id="next">Next →</button></div>
+      <p class="cap" id="cap"></p>
+    </div>
+
+    <div class="notes-col"><div class="notes">
+      <p class="n-eye" id="n-eye"></p>
+      <h2 class="n-h" id="n-title"></h2>
+      <p class="n-job" id="n-job"></p>
+      <div id="n-notes"></div>
+    </div></div>
+  </div>
+</div>
+
+<script>
+const I={
+ road:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 2.6 20h18.8L12 3.4Z"/><path d="M12 10.2v3.6"/><circle cx="12" cy="16.8" r=".7" fill="currentColor"/></svg>',
+ power:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 14h6.8l-1 7.5L19 10h-6.8l.8-7.5Z"/></svg>',
+ water:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2s5.8 6.3 5.8 10.2A5.8 5.8 0 0 1 6.2 13.4C6.2 9.5 12 3.2 12 3.2Z"/><path d="m4.4 19.8 15.2-15.4"/></svg>',
+ fire:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.6c3.9 0 6.8-2.7 6.8-6.6 0-4.5-4.4-6.6-3.6-11.9C12.5 4.7 9.2 7.4 9.2 10.9c0 1.6-1 2.2-1.6 1.4-.8-1-1-2.3-1-2.3-.9 1.3-1.4 3.1-1.4 5 0 3.9 2.9 6.6 6.8 6.6Z"/></svg>',
+ flood:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.4 14.2c2.1 0 2.1 1.9 4.2 1.9s2.1-1.9 4.2-1.9 2.1 1.9 4.2 1.9 2.1-1.9 4.2-1.9"/><path d="M2.4 19c2.1 0 2.1 1.9 4.2 1.9S8.7 19 10.8 19s2.1 1.9 4.2 1.9S17.1 19 19.2 19"/><path d="M6.2 10.4V5.6m5.8 4.8V3.2m5.8 7.2V6.4"/></svg>',
+ security:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6 4.4 5.8v5.9c0 4.5 3.2 8.4 7.6 9.4 4.4-1 7.6-4.9 7.6-9.4V5.8L12 2.6Z"/><path d="M12 8.8v3.5"/><circle cx="12" cy="15.6" r=".7" fill="currentColor"/></svg>',
+ missing:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20.8c.6-3.9 3.6-6.2 7.2-6.2s6.6 2.3 7.2 6.2"/></svg>',
+ notice:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.2v3.6a1.6 1.6 0 0 0 1.6 1.6h1.8L14.8 20V4l-7.4 4.6H5.6A1.6 1.6 0 0 0 4 10.2Z"/><path d="M18.2 9.4a3.8 3.8 0 0 1 0 5.2"/></svg>',
+ pin:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>',
+ bell:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 8.8a5.8 5.8 0 1 0-11.6 0c0 5.8-2.3 7.2-2.3 7.2h16.2s-2.3-1.4-2.3-7.2Z"/><path d="M13.6 19.4a1.9 1.9 0 0 1-3.2 0"/></svg>',
+ back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m14.8 5-7 7 7 7"/></svg>',
+ close:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6.2 6.2 11.6 11.6M17.8 6.2 6.2 17.8"/></svg>',
+ chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9.4 5 7 7-7 7"/></svg>',
+ check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>',
+ checkL:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.6"/></svg>',
+ people:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.1"/><path d="M3 20c.5-3.3 2.9-5.2 6-5.2S14.5 16.7 15 20"/><path d="M16.4 5.3a3.1 3.1 0 0 1 0 5.7M17.8 14.9c2 .7 3.2 2.5 3.5 5.1"/></svg>',
+ warn:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 2.8 20h18.4L12 3.6Z"/><path d="M12 10v3.4"/><circle cx="12" cy="16.6" r=".7" fill="currentColor"/></svg>',
+ clock:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.3 2"/></svg>',
+ info:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r=".8" fill="currentColor"/></svg>',
+ arrow:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.4V4.6M12 4.6 6.6 10M12 4.6 17.4 10"/></svg>',
+ share:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.4V3.6M12 3.6 7.9 7.7M12 3.6l4.1 4.1"/><path d="M5.2 13.6v5.2a1.6 1.6 0 0 0 1.6 1.6h10.4a1.6 1.6 0 0 0 1.6-1.6v-5.2"/></svg>',
+ flag:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 21V4.2M5.4 4.2h10.4l-1.5 3.4 1.5 3.4H5.4"/></svg>',
+ home:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.4 12 3.8l8.2 6.6v9a1 1 0 0 1-1 1H4.8a1 1 0 0 1-1-1v-9Z"/></svg>',
+ mapi:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4.4 6 2.5 5-2.1v12.8l-5 2.1-6-2.5-5 2.1V6.5l5-2.1Z"/><path d="M9 4.4v12.8M15 6.9v12.8"/></svg>',
+ star:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 10.4c0 5.2-7.6 11.6-7.6 11.6s-7.6-6.4-7.6-11.6a7.6 7.6 0 0 1 15.2 0Z"/><circle cx="12" cy="10.2" r="2.6"/></svg>',
+ you:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20.8c.6-3.9 3.6-6.2 7.2-6.2s6.6 2.3 7.2 6.2"/></svg>',
+ plus:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.4v13.2M5.4 12h13.2"/></svg>',
+ torch:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 2.4h7.6L14.5 7h-5L8.2 2.4Z"/><path d="M9.5 7h5v3.5L13 11.9v9.7h-2v-9.7L9.5 10.5V7Z"/></svg>',
+ cam:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.8h3.3L8 6.2h8l1.5 2.6h3.3v10H3.2v-10Z"/><circle cx="12" cy="13.4" r="3.1"/></svg>',
+ leaf:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.2 12.3 2.8 2.8 5-6"/></svg>'
+};
+const SC={critical:'var(--crit)',important:'var(--imp)',info:'var(--info)',resolved:'var(--ok)'};
+const SD={critical:'var(--crit-d)',important:'var(--imp-d)',info:'var(--info-d)',resolved:'var(--ok-d)'};
+
+const alerts=[
+ {id:'sec',icon:'security',cat:'Security',sev:'critical',
+  t:'Two men on a motorbike trailing cars at the estate gate',
+  short:'Motorbike trailing cars at the gate',
+  d:'They have circled the gate three times in the last ten minutes. Security has been told but has not come out yet.',
+  place:'Ikeja GRA · Oduduwa Way',dist:'0.9',ago:'4 min',trust:'un',n:1,held:true,canConfirm:true,
+  tl:[['4 min ago','Reported by a Community Member watching Ikeja GRA.',0]]},
+ {id:'road',icon:'road',cat:'Road blocked',sev:'important',
+  t:'Tree down across the road at the junction',
+  short:'Tree down at the junction',
+  d:'A large tree has fallen across both lanes near the junction. Cars are turning back toward Allen Avenue. No injuries seen.',
+  place:'Ikeja GRA · Isaac John St',dist:'0.7',ago:'8 min',trust:'ok',n:14,seg:'Northbound, toward Allen',canConfirm:true,
+  tl:[['8 min ago','Tree has fallen across the road near the junction.',0],
+      ['6 min ago','14 people nearby confirmed this is happening.',1],
+      ['2 min ago','Added: cars are turning back toward Allen Avenue.',0]]},
+ {id:'power',icon:'power',cat:'Power outage',sev:'info',
+  t:'Power out across the estate since 7:10 PM',
+  short:'Power out since 7:10 PM',
+  d:'No light on Isaac John, Oduduwa or Sowemimo. A utility van was seen at the substation around 7:40.',
+  place:'Ikeja GRA',dist:'1.1',ago:'32 min',trust:'multi',n:47,
+  tl:[['32 min ago','Power has been out in the area since 7:10 PM.',0],
+      ['26 min ago','46 more people reported the same thing. Merged into one alert.',1],
+      ['12 min ago','A utility van was seen at the substation.',0]]},
+ {id:'flood',icon:'flood',cat:'Flooding',sev:'important',
+  t:'Water rising around the underpass',
+  short:'Water rising at the underpass',
+  d:'Water is up to the kerb on the Mobolaji Bank Anthony side. Passable slowly in a high vehicle, not in a saloon car.',
+  place:'Ikeja · Mobolaji Bank Anthony Way',dist:'2.3',ago:'1 hr',trust:'ok',n:9,aged:true,canConfirm:true,
+  tl:[['1 hr ago','Water is accumulating around the underpass.',0],
+      ['52 min ago','9 people nearby confirmed this is happening.',1]]},
+ {id:'notice',icon:'notice',cat:'Community notice',sev:'info',
+  t:'Estate gate closing 11 PM tonight for repairs',
+  short:'Gate closing 11 PM for repairs',
+  d:'The main gate will be shut from 11 PM until about 5 AM while the barrier motor is replaced. Use the Sowemimo gate.',
+  place:'Ikeja GRA',dist:'0.4',ago:'3 hr',trust:'src',n:0,srcName:'Ikeja GRA Residents’ Association',
+  tl:[['3 hr ago','Posted by the Ikeja GRA Residents’ Association, a verified organisation.',1]]}
+];
+const CATS=[
+ {k:'road',n:'Road blocked',s:'Transport',sev:'important',r:'1.2 km along the road',p:240},
+ {k:'security',n:'Security',s:'Safety',sev:'critical',r:'800 m around the spot',p:180},
+ {k:'fire',n:'Fire',s:'Safety',sev:'critical',r:'1.5 km around the spot',p:420},
+ {k:'flood',n:'Flooding',s:'Safety',sev:'important',r:'1 km around the spot',p:310},
+ {k:'power',n:'Power outage',s:'Utilities',sev:'info',r:'2 km around the spot',p:1240},
+ {k:'water',n:'Water outage',s:'Utilities',sev:'info',r:'2 km around the spot',p:1100},
+ {k:'missing',n:'Missing person',s:'Safety',sev:'important',r:'3 km around the spot',p:1800},
+ {k:'notice',n:'Community notice',s:'Community',sev:'info',r:'Followers of this place',p:1800}
+];
+const S={screen:'home',open:'road',cat:'road',ans:{},cnt:{}};
+alerts.forEach(a=>S.cnt[a.id]=a.n);
+
+function sbar(){return '<div class="sbar"><span>20:41</span><span class="sb-r">'+
+ '<span class="sb-b"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:9.5px"></i></span>'+
+ '<svg width="15" height="11" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.4 6.4 0 0 1 8.8 0"/><circle cx="8" cy="9.8" r=".9" fill="currentColor" stroke="none"/></svg>'+
+ '<span class="batt"></span></span></div>';}
+function tabs(a){const t=(k,i,l)=>'<button class="tab" data-tab="'+k+'" aria-current="'+(a===k)+'">'+i+'<span>'+l+'</span></button>';
+ return '<nav class="tabs">'+t('home',I.home,'Home')+t('map',I.mapi,'Map')+
+ '<button class="tab" data-tab="cat" aria-label="Report"><span class="fab">'+I.plus+'</span></button>'+
+ t('places',I.star,'Places')+t('you',I.you,'You')+'</nav>';}
+function trust(a){const n=S.cnt[a.id];
+ if(a.trust==='ok')return '<span class="v">'+I.check+n+' confirmed</span>';
+ if(a.trust==='multi')return '<span>'+n+' independent reports</span>';
+ if(a.trust==='src')return '<span class="v">'+I.check+a.srcName+'</span>';
+ return '<span class="un">Unverified · 1 report</span>';}
+function item(a){
+ return '<button class="item" data-open="'+a.id+'" style="--sc:'+SC[a.sev]+'">'+
+  '<span class="dist">'+a.dist+'<span>km · '+a.ago+'</span></span>'+
+  '<span class="ibody"><span class="icat"><i></i>'+a.cat+'</span>'+
+  '<span class="it">'+a.t+'</span><span class="im">'+trust(a)+'</span>'+
+  (a.held?'<span class="held">'+I.warn+'<span>Held from notifications until someone else confirms it.</span></span>':'')+
+  '</span></button>';}
+
+const B={
+home(){
+ const rest=[alerts[0],alerts[2],alerts[3],alerts[4]];
+ return sbar()+
+ '<div class="hdr"><div><h2 class="h-xl">Around you</h2>'+
+  '<p class="sub met"><i class="live"></i>Ikeja GRA · 4 active</p></div>'+
+  '<button class="circ" data-go="notif" aria-label="Notifications">'+I.bell+'<span class="pip"></span></button></div>'+
+ '<div class="segs"><span class="seg" aria-selected="true">Nearby</span><span class="seg">Following</span><span class="seg">Settled</span></div>'+
+ '<div class="roll">'+
+  '<button class="hero" data-open="road" style="--hd:#231A12;--hc:var(--imp)">'+
+   '<span class="kick lab"><i></i>Closest to you · 8 min ago</span>'+
+   '<h3>Road blocked<br>700 m away.</h3>'+
+   '<p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>'+
+   '<span class="row"><span class="chip good">'+I.check+'14 confirmed</span><span class="chip">'+I.arrow+'Northbound</span></span>'+
+  '</button>'+
+  '<div class="strm">'+rest.map(item).join('')+'</div>'+
+ '</div>'+tabs('home');
+},
+
+detail(){
+ const a=alerts.find(x=>x.id===S.open)||alerts[1];
+ const ans=S.ans[a.id];let ask='';
+ if(a.canConfirm){
+  if(ans) ask='<div class="ask"><div class="done">'+I.checkL+'<span>Counted. This alert is stronger now.</span></div></div>';
+  else if(a.aged) ask='<div class="ask"><h4>Is this still happening?</h4>'+
+   '<p>Reported an hour ago. Nobody has updated it since.</p><div class="askrow">'+
+   '<button class="askb" data-ans="'+a.id+'|yes">Still on</button>'+
+   '<button class="askb" data-ans="'+a.id+'|over">It’s over</button>'+
+   '<button class="askb" data-ans="'+a.id+'|idk">Not sure</button></div></div>';
+  else ask='<div class="ask"><h4>Are you nearby? Did this happen?</h4>'+
+   '<p>Answers from people inside the alert area are what move it from reported to confirmed.</p><div class="askrow">'+
+   '<button class="askb" data-ans="'+a.id+'|yes">I see it</button>'+
+   '<button class="askb" data-ans="'+a.id+'|no">Not accurate</button>'+
+   '<button class="askb" data-ans="'+a.id+'|idk">Not sure</button></div></div>';
+ }
+ return sbar()+
+ '<div class="hdr" style="padding-bottom:6px"><button class="circ" data-tab="home" aria-label="Back">'+I.back+'</button>'+
+  '<span style="flex:1"></span><button class="circ" aria-label="Share">'+I.share+'</button>'+
+  '<button class="circ" aria-label="Report this">'+I.flag+'</button></div>'+
+ '<div class="roll"><div class="d-hero" style="--sc:'+SC[a.sev]+'">'+
+  '<div class="d-kick"><span class="d-cat"><i></i>'+a.cat+'</span></div>'+
+  '<h2 class="h-l">'+a.t+'</h2>'+
+  '<div class="d-meta met">'+a.place+' · '+a.dist+' km away · '+a.ago+'</div>'+
+  (a.seg?'<div style="margin-top:12px"><span class="chip">'+I.arrow+a.seg+'</span></div>':'')+
+  '<p class="bd" style="margin-top:16px;color:var(--fg)">'+a.d+'</p>'+
+  '<div class="im" style="margin-top:14px">'+trust(a)+'</div>'+
+  (a.held?'<div class="held" style="margin-top:14px">'+I.warn+'<span><b>Nobody has confirmed this yet.</b> It has not been sent to anyone as a notification. If you are nearby and can see it, say so below.</span></div>':'')+
+ '</div>'+
+ (ask?'<div class="blk">'+ask+'</div>':'')+
+ '<div class="blk"><p class="blk-h lab">What we know</p><div class="tl">'+
+  a.tl.map(t=>'<div class="tl-i"><span class="tl-d'+(t[2]?' hl':'')+'"></span><div><p>'+t[1]+'</p><span class="met">'+t[0]+'</span></div></div>').join('')+
+ '</div></div>'+
+ '<div class="blk"><p class="blk-h lab">Where</p>'+
+  '<div style="height:120px;border-radius:14px;overflow:hidden;position:relative;background:#0E0E10">'+mini(SC[a.sev])+'</div>'+
+  '<p class="met" style="margin:12px 0 0;line-height:1.55;font-size:12px">Pinned to the junction, not to the reporter. Nobody can see where the person who filed this was standing.</p>'+
+ '</div><div style="height:10px"></div></div>'+
+ '<div class="actb"><button class="mini" data-tab="map">'+I.pin+'See on map</button><button class="mini">'+I.share+'Share</button></div>';
+},
+
+cat(){
+ return sbar()+
+ '<div class="hdr"><button class="circ" data-tab="home" aria-label="Cancel">'+I.close+'</button>'+
+  '<div style="flex:1"><h2 class="h-l">What’s happening?</h2></div></div>'+
+ '<div class="roll">'+
+  '<p class="bd" style="padding:0 22px 20px">Pick the closest one. You can add detail next, or just send it.</p>'+
+  '<div class="cats">'+CATS.map(c=>'<button class="cat" data-cat="'+c.k+'" style="--sc:'+SC[c.sev]+'">'+
+   '<span class="ci">'+I[c.k]+'</span><span><b>'+c.n+'</b><span class="met">'+c.s+'</span></span></button>').join('')+'</div>'+
+  '<div style="padding:0 22px 24px"><button class="btn sec">Something else</button></div>'+
+ '</div>';
+},
+
+review(){
+ const c=CATS.find(x=>x.k===S.cat)||CATS[0];
+ return sbar()+
+ '<div class="hdr"><button class="circ" data-go="cat" aria-label="Back">'+I.back+'</button>'+
+  '<div style="flex:1"><h2 class="h-l">Check and send</h2></div></div>'+
+ '<div class="roll">'+
+  '<div class="fld"><div class="lrow" style="--sc:'+SC[c.sev]+'"><span class="li">'+I[c.k]+'</span>'+
+   '<span class="lt"><b>'+c.n+'</b><span class="met">'+c.s+'</span></span>'+
+   '<button class="lc" data-go="cat">Change</button></div></div>'+
+  '<div class="fld"><div class="flab"><span class="lab">Where</span></div>'+
+   '<div class="lrow"><span class="li">'+I.pin+'</span>'+
+   '<span class="lt"><b>Isaac John St, at the junction</b><span class="met">Snapped to the junction</span></span>'+
+   '<button class="lc">Move</button></div></div>'+
+  '<div class="fld"><div class="flab"><span class="lab">What should people know?</span><span class="met" id="cc">0 / 280</span></div>'+
+   '<textarea id="ta" rows="3" placeholder="Tree has fallen across the road near the junction."></textarea></div>'+
+  '<div class="fld"><div class="flab"><span class="lab">Who gets this</span></div>'+
+   '<div class="reach"><div class="reach-t"><span class="reach-n" id="rn">~'+c.p+'<span>people</span></span>'+
+   '<button class="lc" id="adjb">Adjust</button></div>'+
+   '<p id="rw">Set automatically for '+c.n.toLowerCase()+': <b>'+c.r+'</b>. People following Ikeja GRA get it too.</p>'+
+   '<div class="adj hide" id="adjbox"><div class="chips" id="chips">'+
+    '<button class="pick" data-r="0">500 m</button><button class="pick on" data-r="1">Suggested</button>'+
+    '<button class="pick" data-r="2">2 km</button><button class="pick" data-r="3">Whole area</button></div>'+
+   (S.cat==='road'?'<div style="margin-top:14px"><div class="flab" style="margin-bottom:9px"><span class="lab">Which direction?</span></div>'+
+    '<div class="chips" id="dir"><button class="pick on">Northbound</button><button class="pick">Southbound</button><button class="pick">Both</button></div></div>':'')+
+   '</div></div></div><div style="height:4px"></div></div>'+
+ '<div class="sendb"><button class="btn" id="send">Send alert</button>'+
+  '<span class="sendn met" id="sn">Reaches about '+c.p+' people around Ikeja GRA</span></div>';
+},
+
+sent(){
+ const c=CATS.find(x=>x.k===S.cat)||CATS[0];const crit=c.sev==='critical';
+ return sbar()+'<div class="sent"><span class="tick">'+I.checkL+'</span>'+
+ '<h2 class="h-xl">Sent.</h2>'+
+ '<p class="bd" style="margin-top:12px">Your '+c.n.toLowerCase()+' report is live around Ikeja GRA.</p>'+
+ '<div class="nxt"><p class="lab" style="margin:0 0 14px">What happens now</p><ul>'+
+  (crit?'<li>'+I.warn+'<span>It is in the feed, but <b>no notification has gone out</b>. One more person nearby has to confirm it first.</span></li>'
+       :'<li>'+I.check+'<span>About <b>'+c.p+' people</b> nearby have it on their lock screen.</span></li>')+
+  '<li>'+I.people+'<span>People inside the area are being asked whether they can see it too.</span></li>'+
+  '<li>'+I.clock+'<span>We will check back in about an hour to ask if it is over.</span></li>'+
+ '</ul></div><button class="btn sec" data-tab="home">Back to the feed</button></div>';
+},
+
+map(){
+ const pins=[{x:47,y:33,c:'var(--imp)',l:'Tree down',id:'road'},
+  {x:74,y:19,c:'var(--crit)',l:'Security',id:'sec',f:1},
+  {x:24,y:48,c:'var(--info)',l:'Outage · 47',id:'power'},
+  {x:78,y:56,c:'var(--imp)',l:'Flooding',id:'flood'}];
+ const a=alerts.find(x=>x.id===S.open&&x.id!=='notice')||alerts[1];
+ return sbar()+'<div class="mw">'+big()+
+  '<div class="mtop"><span class="mf on">'+I.pin+'Ikeja GRA</span><span class="mf">Active only</span><span class="mf">6 hrs</span></div>'+
+  '<span class="me" style="left:40%;top:42%"><i></i></span>'+
+  pins.map(p=>'<span class="pin'+(p.f?' faint':'')+'" style="left:'+p.x+'%;top:'+p.y+'%;--pc:'+p.c+'"><button data-open="'+p.id+'">'+I.pin+p.l+'</button></span>').join('')+
+  '<div class="sheet"><span class="grab"></span><div class="roll"><div class="strm">'+item(a)+'</div></div></div>'+
+ '</div>'+tabs('map');
+},
+
+places(){
+ const r=(i,n,s,m)=>'<button class="row"><span class="ri">'+i+'</span><span class="rt"><b>'+n+'</b><span class="s">'+s+'</span><span class="met">'+m+'</span></span>'+I.chev+'</button>';
+ return sbar()+
+ '<div class="hdr"><div style="flex:1"><h2 class="h-xl">Places</h2></div>'+
+  '<button class="circ" aria-label="Add a place">'+I.plus+'</button></div>'+
+ '<div class="roll">'+
+  '<div class="sech"><span class="lab">Right now</span></div>'+
+  '<div class="rows"><div class="row"><span class="ri">'+I.pin+'</span>'+
+   '<span class="rt"><b>Where I am</b><span class="s">Ikeja GRA · updated 4 min ago</span>'+
+   '<span class="met">Approximate · ~500 m accuracy</span></span><span class="sw on" data-sw></span></div></div>'+
+  '<p class="expl">We keep your rough area, not your street. It is never shown to anyone else, and it is not stored once you turn this off.</p>'+
+  '<div class="sech"><span class="lab">Pinned</span><span class="met">Private to you</span></div>'+
+  '<div class="rows">'+
+   r(I.home,'Home','Ikeja GRA · 1 km','Critical + important + notices')+
+   r(I.notice,'Work','Victoria Island · 800 m','Critical + important')+
+   r(I.missing,'Mum’s place','Ogba · 1.5 km','Critical + important')+
+  '</div>'+
+  '<p class="expl">Pinned places are never published. Other people cannot tell that anyone has pinned a given house or street.</p>'+
+  '<div class="sech"><span class="lab">Following</span></div>'+
+  '<div class="rows">'+
+   r(I.star,'Lekki Phase 1','1.8k watching','Feed only, no push')+
+   r(I.star,'UNILAG','4.2k watching','Critical + important')+
+  '</div>'+
+  '<div style="padding:22px"><button class="btn sec">Follow another place</button></div>'+
+ '</div>'+tabs('places');
+},
+
+notif(){
+ const row=(n,s,on,lock)=>'<button class="row" data-sw><span class="rt"><b>'+n+'</b><span class="s">'+s+'</span></span>'+
+  (lock?'<span class="lockp">Always on</span>':'<span class="sw'+(on?' on':'')+'"></span>')+'</button>';
+ return sbar()+
+ '<div class="hdr"><button class="circ" data-tab="home" aria-label="Back">'+I.back+'</button>'+
+  '<div style="flex:1"><h2 class="h-l">Notifications</h2></div></div>'+
+ '<div class="roll">'+
+  '<p class="bd" style="padding:0 22px 4px">You decide what is allowed to interrupt you. We will never send more than <b style="color:var(--fg);font-weight:600">four critical alerts a day</b>, however many are reported.</p>'+
+  '<div class="tierh"><h3>Critical</h3><span class="tp" style="background:var(--crit-d);color:var(--crit)">Interrupts you</span></div>'+
+  '<div class="rows">'+row('Fire','Confirmed fire in your alert area',1,1)+
+   row('Security incident','Only once a second person nearby confirms it',1,1)+
+   row('Severe flooding','Water blocking a road you follow',1,1)+'</div>'+
+  '<p class="expl">These cannot be switched off — it is the promise the app makes. They are still capped, and an unconfirmed report never becomes one.</p>'+
+  '<div class="tierh"><h3>Important</h3><span class="tp" style="background:var(--imp-d);color:var(--imp)">Notifies, batched</span></div>'+
+  '<div class="rows">'+row('Road blocked or closed','When it affects a road you use',1)+
+   row('Power outage','Batched — at most one an hour',1)+
+   row('Water outage','Batched — at most one an hour',0)+
+   row('Missing person or pet','Within 3 km of a place you follow',1)+'</div>'+
+  '<div class="tierh"><h3>For the feed</h3><span class="tp" style="background:var(--info-d);color:var(--info)">No notification</span></div>'+
+  '<div class="rows">'+row('Community notices','From verified organisations',0)+
+   row('Events and closures','',0)+row('Lost and found','',0)+'</div>'+
+  '<div class="sech"><span class="lab">Quiet hours</span></div>'+
+  '<div class="rows">'+row('Silence 10 PM to 6 AM','Critical alerts still come through',1)+'</div>'+
+  '<div style="height:20px"></div>'+
+ '</div>'+tabs('you');
+},
+
+lock(){
+ return '<div class="lock">'+sbar()+
+ '<div class="ltime"><div class="d">Monday 29 September</div><div class="t">20:41</div></div>'+
+ '<div class="nf"><div class="nf-t"><span class="nf-i">'+I.pin+'</span><span class="nf-a">Community Alerts</span><span class="met">now</span></div>'+
+  '<h4>Road blocked 700 m from you</h4>'+
+  '<p>Tree down across Isaac John St at the junction. Northbound is impassable.</p>'+
+  '<div class="tr"><span class="met" style="color:var(--ok);display:flex;align-items:center;gap:6px">'+I.check+'14 people nearby confirmed</span></div></div>'+
+ '<div class="nf two"><div class="nf-t"><span class="nf-i">'+I.pin+'</span><span class="nf-a">Community Alerts</span><span class="met">32m ago</span></div>'+
+  '<h4>Power out around Home</h4><p>47 reports across Ikeja GRA since 7:10 PM.</p></div>'+
+ '<div class="lfoot"><i>'+I.torch+'</i><i>'+I.cam+'</i></div></div>';
+},
+
+empty(){
+ return sbar()+
+ '<div class="hdr"><div><h2 class="h-xl">Around you</h2>'+
+  '<p class="sub met"><i class="live calm"></i>Ikeja GRA · all clear</p></div>'+
+  '<button class="circ" data-go="notif" aria-label="Notifications">'+I.bell+'</button></div>'+
+ '<div class="segs"><span class="seg" aria-selected="true">Nearby</span><span class="seg">Following</span><span class="seg">Settled</span></div>'+
+ '<div class="hero" style="--hd:#101A15;--hc:var(--ok);margin-bottom:0">'+
+  '<span class="kick lab"><i></i>Quiet · last alert 6 hrs ago</span>'+
+  '<h3>Nothing active<br>around you.</h3>'+
+  '<p>47 people are watching Ikeja GRA tonight. You will know before the group chat does.</p></div>'+
+ '<div class="empty">'+
+  '<span class="watch"><span class="faces"><i style="background:#6E8B90"></i><i style="background:#9A8A6C"></i><i style="background:#7A8C78"></i><i style="background:#8C7A7A"></i></span>'+
+  '<span class="met">47 people watching this area</span></span>'+
+  '<p class="bd" style="max-width:30ch;margin-bottom:22px">Quiet is the good outcome. Raise the odds you hear about the next one early.</p>'+
+  '<div class="stack" style="width:100%;max-width:280px"><button class="btn sec">Invite your neighbours</button>'+
+  '<button class="btn qui" data-go="places">Follow another place</button></div>'+
+ '</div>'+tabs('home');
+},
+
+ob1(){
+ const pins=[{x:63,y:16,c:'var(--crit)',l:'Security',f:1},
+  {x:38,y:38,c:'var(--imp)',l:'Tree down'},
+  {x:19,y:62,c:'var(--info)',l:'Outage · 47'},
+  {x:70,y:76,c:'var(--imp)',l:'Flooding'}];
+ return '<div class="ob1"><div class="ob1-map">'+big()+
+  '<span class="me" style="left:42%;top:56%"><i></i></span>'+
+  pins.map(p=>'<span class="pin'+(p.f?' faint':'')+'" style="left:'+p.x+'%;top:'+p.y+'%;--pc:'+p.c+'"><button tabindex="-1">'+I.pin+p.l+'</button></span>').join('')+
+  '<span class="ob1-scrim"></span></div>'+
+  sbar()+
+  '<div class="ob1-c">'+
+   '<span class="lab" style="display:block;margin-bottom:14px">Ikeja GRA · right now</span>'+
+   '<h2 class="h-xl" style="font-size:33px">Important things happening nearby. In time to matter.</h2>'+
+   '<p class="bd" style="margin-top:14px;max-width:32ch">The blocked road, the outage, the incident at the gate — while it still changes what you would do.</p>'+
+   '<div class="dots"><i class="on"></i><i></i><i></i></div>'+
+   '<div class="stack"><button class="btn" data-go="ob2">Get started</button></div>'+
+  '</div></div>';
+},
+
+ob2(){
+ return sbar()+'<div class="ob"><div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding:16px 0">'+
+ '<h2 class="h-xl" style="font-size:30px">Where should we keep you informed?</h2>'+
+ '<p class="bd" style="margin-top:12px">You can change this any time, and add as many places as you like.</p>'+
+ '<div class="pts">'+
+  '<div class="pt"><span class="pi">'+I.pin+'</span><div><h4>Wherever I am</h4><p>We use your rough area — about 500 m — never your exact street.</p></div></div>'+
+  '<div class="pt"><span class="pi">'+I.home+'</span><div><h4>A place I choose</h4><p>Home, work, your child’s school. Watched even when you are not there.</p></div></div>'+
+  '<div class="pt"><span class="pi">'+I.security+'</span><div><h4>Nobody sees where you are</h4><p>Your location is only ever used to decide what to show you.</p></div></div>'+
+ '</div></div>'+
+ '<div class="dots"><i></i><i class="on"></i><i></i></div>'+
+ '<div class="stack"><button class="btn" data-go="ob3">Use where I am</button>'+
+ '<button class="btn sec">Choose a place instead</button>'+
+ '<button class="btn qui" data-tab="home">Skip for now</button></div></div>';
+},
+
+ob3(){
+ return sbar()+'<div class="ob" style="opacity:.35;pointer-events:none">'+
+ '<div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">'+
+ '<h2 class="h-xl" style="font-size:30px">Where should we keep you informed?</h2>'+
+ '<p class="bd" style="margin-top:12px">You can change this any time.</p></div>'+
+ '<div class="stack"><span class="btn">Use where I am</span></div></div>'+
+ '<div class="veil"><div class="perm"><div class="perm-b">'+
+  '<h5>Allow “Community Alerts” to use your location?</h5>'+
+  '<p>Your approximate location is used to show alerts near you. It is never shared with other people.</p>'+
+  '<div class="perm-map">'+permMap()+'</div></div>'+
+  '<div class="perm-o"><button class="b" data-go="home">Allow While Using App</button>'+
+  '<button data-go="home">Allow Once</button><button data-go="empty">Don’t Allow</button></div>'+
+ '</div></div>';
+}};
+
+function big(){return '<svg class="msvg" viewBox="0 0 390 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+ '<rect width="390" height="640" fill="#0A0A0B"/>'+
+ '<g stroke="#1B1B1E" stroke-width="17" stroke-linecap="round"><path d="M-20 160 H410"/><path d="M-20 360 H410"/><path d="M-20 550 H410"/><path d="M96 -20 V660"/><path d="M262 -20 V660"/></g>'+
+ '<g stroke="#242428" stroke-width="6" opacity=".85"><path d="M-20 80 H410"/><path d="M-20 262 H410"/><path d="M-20 456 H410"/><path d="M34 -20 V660"/><path d="M178 -20 V660"/><path d="M336 -20 V660"/></g>'+
+ '<path d="M-20 300 Q110 274 198 316 T410 282" stroke="#16252B" stroke-width="20" fill="none"/>'+
+ '<g fill="#141417"><rect x="110" y="178" width="52" height="44" rx="4"/><rect x="110" y="232" width="52" height="26" rx="4"/>'+
+ '<rect x="282" y="178" width="44" height="48" rx="4"/><rect x="42" y="392" width="42" height="34" rx="4"/>'+
+ '<rect x="282" y="390" width="48" height="44" rx="4"/><rect x="112" y="392" width="50" height="32" rx="4"/>'+
+ '<rect x="196" y="486" width="46" height="34" rx="4"/><rect x="40" y="196" width="40" height="32" rx="4"/></g>'+
+ '<circle cx="156" cy="269" r="112" fill="#FAFAFA" opacity=".035"/>'+
+ '<circle cx="156" cy="269" r="112" fill="none" stroke="#FAFAFA" stroke-width="1" stroke-dasharray="4 7" opacity=".2"/>'+
+ '<g fill="#4A4B50" font-family="Inter, sans-serif" font-size="9" font-weight="500" letter-spacing=".1em">'+
+ '<text x="14" y="154">ISAAC JOHN ST</text><text x="14" y="354">ODUDUWA WAY</text><text x="14" y="544">SOWEMIMO ST</text></g></svg>';}
+function mini(c){return '<svg viewBox="0 0 340 120" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">'+
+ '<rect width="340" height="120" fill="#0A0A0B"/>'+
+ '<g stroke="#1B1B1E" stroke-width="13" stroke-linecap="round"><path d="M-10 64 H350"/><path d="M172 -10 V130"/></g>'+
+ '<g stroke="#242428" stroke-width="4"><path d="M-10 20 H350"/><path d="M-10 104 H350"/><path d="M70 -10 V130"/><path d="M272 -10 V130"/></g>'+
+ '<g fill="#141417"><rect x="188" y="18" width="40" height="26" rx="3"/><rect x="96" y="78" width="34" height="22" rx="3"/></g>'+
+ '<circle cx="172" cy="64" r="30" fill="'+c+'" opacity=".14"/>'+
+ '<circle cx="172" cy="64" r="6.5" fill="'+c+'" stroke="#0A0A0B" stroke-width="2.4"/>'+
+ '<circle cx="118" cy="84" r="5" fill="#4FA8F7" stroke="#0A0A0B" stroke-width="2"/></svg>';}
+function permMap(){return '<svg viewBox="0 0 244 78" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">'+
+ '<rect width="244" height="78" fill="#2A2A2D"/><g stroke="#333336" stroke-width="9"><path d="M-10 24 H254"/><path d="M-10 60 H254"/><path d="M80 -10 V88"/><path d="M170 -10 V88"/></g>'+
+ '<circle cx="122" cy="42" r="24" fill="#4FA8F7" opacity=".2"/><circle cx="122" cy="42" r="6" fill="#4FA8F7" stroke="#2A2A2D" stroke-width="2.2"/></svg>';}
+const NOTES={
+ob1:{t:'Value first',job:'Say what the product is for before asking for anything. This screen has to earn the permission prompt two screens later.',
+ n:[['keep','Positioning','Leads on <b>“in time to matter”</b>, not on danger. §47 asks for calm and useful; an app that opens with sirens teaches people to dread opening it.'],
+    ['fix','Three examples, not a feature list','Naming the blocked road, the outage and the gate incident lets people recognise their own week in it.'],
+    ['ref','Pattern','Viator primes location with a reason before the OS dialog. GO Club asks with no reason at all, and it reads as a demand.','https://mobbin.com/flows/247308cf-b335-49b7-9644-bb99eabc7217|Viator priming']]},
+ob2:{t:'Where to watch',job:'Turn the four location modes of §8 into one question a person can answer.',
+ n:[['fix','Four modes, two choices','Showing all four on first run is a quiz. <b>Current</b> and <b>pinned</b> cover the first session; followed and temporary places belong in Places, once there is a reason to want them.'],
+    ['keep','The privacy promise sits on the screen that asks','“About 500 m, never your exact street” is next to the button that turns it on, not buried in a policy.'],
+    ['keep','Skip is a real path','It lands on the quiet-area screen, so a refusal is still a working app.']]},
+ob3:{t:'The permission moment',job:'The one screen you cannot design. Everything before it is the design.',
+ n:[['keep','Ask after the reason','By now the person has read what it is for and chosen it. That ordering is the whole trick.'],
+    ['risk','“Don’t Allow” goes somewhere useful','Roughly a third will decline. Tapping it here lands on the quiet area with pinned places offered — not a nag screen.']]},
+home:{t:'Home',job:'Answer one question in the first screenful: is anything happening around me that I should know about?',
+ n:[['fix','One alert is promoted, the rest are a stream','The hero is chosen by distance and confidence together. Everything else gets a tight row where <b>distance is the left margin</b> and severity is a colour tick — no card chrome, no counts, no hearts.'],
+    ['risk','The unverified critical alert is the riskiest thing in the product','A single-source security report is what gets weaponised (§24). It is severe in colour but <b>quiet in status</b>, and it says outright that it has not been sent to anyone.'],
+    ['fix','Confidence gates delivery','§22 tiers notifications by category, which still lets one anonymous person ring 180 phones. An unconfirmed critical report goes to the feed and waits.'],
+    ['fix','No engagement furniture','No view counts, no reactions, no infinite scroll. Citizen’s feed leads with video and nationwide news; that is the drift §37 warns about.'],
+    ['ref','Pattern','Finimize and HYPE for the promoted-hero-then-stream shape; Ultrahuman for the metadata-led row.','https://mobbin.com/screens/5089f476-5308-4b7b-8109-5dcd49fde77e|Finimize']]},
+detail:{t:'Alert detail',job:'The trust screen. Everything here helps someone decide whether to act.',
+ n:[['fix','Two questions, asked at different times','§17 offers “Confirm / Not accurate”; §19 asks “Is this still happening?”. Those measure <b>accuracy</b> and <b>liveness</b>, and mixing them corrupts the confidence score and the lifecycle. Open the flooding alert for the aged version.'],
+    ['keep','Timeline instead of comments','§32 is right to hold comments back. The timeline gives what comments are actually used for — what changed — without the arguing.'],
+    ['fix','Say why the answer matters','Without that line, a confirm button is just another like.'],
+    ['risk','The pin is snapped to the junction','§26 protects pinned places, but proposing the reporter’s live position as the alert location publishes where they stood. For security categories that can identify them.']]},
+map:{t:'Map',job:'Geographic overview. Useful, and deliberately not the front door.',
+ n:[['keep','Feed first, map second','§27 says the map should not become the product. A map asks you to interpret; a list tells you.'],
+    ['fix','Confidence shows on the pin','The unconfirmed security pin is a dashed outline, not a solid chip. A map where every pin looks equally true is a misinformation surface.'],
+    ['keep','Your alert radius is drawn','Makes “who gets told about things here” legible without a settings screen.']]},
+cat:{t:'What happened',job:'Step one of reporting. It has to survive one hand, in the rain, while upset.',
+ n:[['fix','Five steps became two','§11–15 specify category → location → description → audience → confirm. Location is known, audience is derivable, and confirmation belongs beside the send button. <b>Category, then one review screen.</b>'],
+    ['keep','Structured categories','Free text costs time and makes routing impossible.'],
+    ['ref','Pattern','Apple Maps reports an incident in three taps with no text at all. Speed is the feature.','https://mobbin.com/flows/b2ae1786-5fc7-44e2-a9b7-47c599e0b6fd|Apple Maps']]},
+review:{t:'Review and send',job:'Four PRD steps on one screen, with the consequence next to the button that causes it.',
+ n:[['fix','Audience is a consequence, not a control','§14 asks the reporter to set a radius. Nobody reporting a fire thinks in kilometres, and the category already implies the answer. Shown as a number, with Adjust for the few who need it — the biggest speed win in the flow.'],
+    ['fix','Direction for road incidents','§21 names the problem — a circle is wrong for a blocked road — then defers it. A direction chip is a cheap partial fix with no routing engine.'],
+    ['keep','Confirmation merged into the send bar','Same protection as §15’s confirm step, one screen fewer.'],
+    ['ref','Pattern','Citizen puts “2434 nearby users will be notified” under Send. Consequence stated, not delegated.','https://mobbin.com/flows/f5a8ff74-f330-42da-9c4e-2727f53b52d1|Citizen create']]},
+sent:{t:'Sent',job:'Close the loop, and teach the trust model at the only moment anyone is paying attention to it.',
+ n:[['fix','Tell them what did not happen','For a critical category this says plainly that <b>no notification has gone out</b>, and why. It also quietly discourages the person filing a false alarm.'],
+    ['fix','Resolution is scheduled here','§34 lets the creator resolve an alert but gives them no reason to return. The promised check-in is what keeps the feed clean.'],
+    ['keep','No score, no badge','§23 warns against a popularity contest. Nothing rewards reporting volume.']]},
+places:{t:'Places',job:'Make the four location modes manageable, and the privacy claims of §25 and §26 visible.',
+ n:[['keep','Current, pinned and followed are separate groups','Three groups, three meanings.'],
+    ['fix','Each place carries its own notification level','§29 asks for per-place radius, categories and preference. Shown as one summary line; the detail is a level deeper.'],
+    ['risk','State the guarantee where it is doubted','“Other people cannot tell that anyone has pinned a given house” is the §26 requirement, written where someone decides whether to pin their home.']]},
+notif:{t:'Notifications',job:'The screen that decides whether this survives contact with real users. §50 names fatigue as risk one.',
+ n:[['fix','A floor and a ceiling','Full control lets someone mute the fire alert and then blame the app; no control produces fatigue. <b>Critical cannot be switched off, and is capped at four a day.</b> Everything else is yours.'],
+    ['fix','Batching stated on the row','“At most one an hour” is a promise you can be held to, and it is what stops forty outage reports making forty buzzes.'],
+    ['risk','Never paywall this screen','Citizen gates alert customisation behind a subscription, so the free experience is the noisy one. For a product whose main risk is fatigue, that is backwards.'],
+    ['ref','Pattern','YouTube Studio ships a row with no toggle at all — the precedent for an always-on tier.','https://mobbin.com/screens/1a75c9de-4f7f-4d1d-8fb5-468adf1b3405|YouTube Studio']]},
+lock:{t:'Lock screen',job:'The real product surface. Most alerts are read and acted on here and never opened.',
+ n:[['fix','§49 lists it and the PRD never designs it','If the notification does not carry enough to act on, the product has failed however good the feed is.'],
+    ['fix','Trust rides along','“14 people nearby confirmed” is in the notification body. Without it, the whole §18 system is invisible to the people who most need it.'],
+    ['keep','Distance and direction in the first line','The two facts that change what someone does next.']]},
+empty:{t:'Quiet area',job:'The most likely first experience in a new community, and the one §42 leaves undesigned.',
+ n:[['risk','Cold start is a design problem first','The first person in an estate opens the app to nothing, and an empty list reads as broken.'],
+    ['fix','Show coverage, not content','“47 people watching” proves the app works <i>and</i> the area is calm — two different things an empty list cannot separate.'],
+    ['keep','Quiet is the good outcome','The copy says so rather than apologising for having nothing.'],
+    ['fix','The two exits are the two fixes','Inviting neighbours raises density; following another place gives the app something to show tonight. Both work on §43.']]}
+};
+
+const ORDER=['ob1','ob2','ob3','home','detail','map','cat','review','sent','places','notif','lock','empty'];
+const NUM={};ORDER.forEach((k,i)=>NUM[k]=String(i+1).padStart(2,'0'));
+const CAP={ob1:'Value',ob2:'Where to watch',ob3:'Permission',home:'Home',detail:'Alert detail',map:'Map',cat:'What happened',review:'Review',sent:'Sent',places:'Places',notif:'Notifications',lock:'Lock screen',empty:'Quiet area'};
+const phone=document.getElementById('phone');
+
+function render(){
+ phone.innerHTML='<div class="sc" data-on="1">'+B[S.screen]()+'</div>';
+ document.querySelectorAll('.nav-b').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===S.screen)));
+ document.getElementById('cap').textContent=NUM[S.screen]+' — '+CAP[S.screen];
+ const n=NOTES[S.screen];
+ document.getElementById('n-eye').textContent='Screen '+NUM[S.screen]+' · audit';
+ document.getElementById('n-title').textContent=n.t;
+ document.getElementById('n-job').textContent=n.job;
+ document.getElementById('n-notes').innerHTML=n.n.map(x=>{
+  const c={fix:'t-fix',keep:'t-keep',risk:'t-risk',ref:'t-ref'}[x[0]];
+  const l={fix:'Changed',keep:'Kept',risk:'Risk',ref:'Reference'}[x[0]];
+  let b='<p>'+x[2]+'</p>';
+  if(x[0]==='ref'&&x[3]){const[h,t]=x[3].split('|');b+='<div class="refs"><a href="'+h+'" target="_blank" rel="noopener">'+t+' ↗</a></div>';}
+  return '<div class="note"><span class="n-tag '+c+'">'+l+' · '+x[1]+'</span>'+b+'</div>';
+ }).join('');
+ wire();
+}
+function go(s){S.screen=s;render();}
+function toast(m){const t=document.createElement('div');t.className='toast';
+ t.innerHTML='<span style="color:var(--ok)">'+I.check+'</span><span>'+m+'</span>';
+ phone.querySelector('.sc').appendChild(t);setTimeout(()=>t.remove(),2200);}
+
+function wire(){
+ phone.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;go(t==='you'?'notif':t);});
+ phone.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+ phone.querySelectorAll('[data-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();S.open=b.dataset.open;
+   if(S.screen==='map')render();else go('detail');});
+ phone.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;go('review');});
+ phone.querySelectorAll('[data-ans]').forEach(b=>b.onclick=()=>{
+  const[id,v]=b.dataset.ans.split('|');const a=alerts.find(x=>x.id===id);
+  b.classList.add('on');
+  setTimeout(()=>{S.ans[id]=v;
+   if(v==='yes'){S.cnt[id]++;if(a.trust==='un'){a.trust='multi';a.held=false;}}
+   if(v==='over'){a.sev='resolved';a.trust='ok';}
+   render();toast(v==='over'?'Marked as over. Others nearby will be asked too.':'Counted. This alert is stronger now.');},220);
+ });
+ phone.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{
+  const s=b.classList.contains('sw')?b:b.querySelector('.sw');if(s)s.classList.toggle('on');});
+ const ta=phone.querySelector('#ta');
+ if(ta)ta.oninput=()=>{phone.querySelector('#cc').textContent=ta.value.length+' / 280';};
+ const adj=phone.querySelector('#adjb');
+ if(adj)adj.onclick=()=>{const bx=phone.querySelector('#adjbox');
+  const closed=bx.classList.toggle('hide');adj.textContent=closed?'Adjust':'Done';};
+ const ch=phone.querySelector('#chips');
+ if(ch){const c=CATS.find(x=>x.k===S.cat);const m=[.35,1,1.9,3.4];
+  ch.querySelectorAll('.pick').forEach(p=>p.onclick=()=>{
+   ch.querySelectorAll('.pick').forEach(o=>o.classList.remove('on'));p.classList.add('on');
+   const v=Math.round(c.p*m[+p.dataset.r]/10)*10;
+   phone.querySelector('#rn').innerHTML='~'+v+'<span>people</span>';
+   phone.querySelector('#sn').textContent='Reaches about '+v+' people around Ikeja GRA';
+   if(+p.dataset.r!==1)phone.querySelector('#rw').innerHTML='Changed from the suggested <b>'+c.r+'</b>. Wider is not always better — it costs you trust with people it did not concern.';
+  });}
+ const dir=phone.querySelector('#dir');
+ if(dir)dir.querySelectorAll('.pick').forEach(p=>p.onclick=()=>{
+  dir.querySelectorAll('.pick').forEach(o=>o.classList.remove('on'));p.classList.add('on');});
+ const sd=phone.querySelector('#send');
+ if(sd)sd.onclick=()=>{sd.textContent='Sending…';sd.disabled=true;setTimeout(()=>go('sent'),500);};
+}
+document.querySelectorAll('.nav-b').forEach(b=>b.onclick=()=>go(b.dataset.go));
+document.getElementById('next').onclick=()=>go(ORDER[(ORDER.indexOf(S.screen)+1)%ORDER.length]);
+document.getElementById('prev').onclick=()=>go(ORDER[(ORDER.indexOf(S.screen)-1+ORDER.length)%ORDER.length]);
+document.addEventListener('keydown',e=>{if(e.target.matches('textarea,input'))return;
+ if(e.key==='ArrowRight')document.getElementById('next').click();
+ if(e.key==='ArrowLeft')document.getElementById('prev').click();});
+render();
+</script>
+
+</body>
+</html>
